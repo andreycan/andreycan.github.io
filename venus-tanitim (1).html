@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venüs — Masaüstünde yaşayan yapay zeka asistanı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0f1a;
+    --panel:#0d1524;
+    --panel-2:#111c30;
+    --cyan:#00ffff;
+    --cyan-dark:#00b3b3;
+    --blue:#2f86ff;
+    --yellow:#ffd60a;
+    --green:#00ff88;
+    --purple:#b565f5;
+    --red:#ff2d55;
+    --text:#eaf7f8;
+    --text-soft:#7fa8b8;
+    --state-color:#2f86ff;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    line-height:1.15;
+    margin:0 0 .5em;
+    color:var(--text);
+  }
+  p{margin:0 0 1em; color:var(--text-soft); max-width:60ch;}
+  a{color:var(--cyan);}
+  img,svg{display:block; max-width:100%;}
+  .container{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  section{padding:96px 0;}
+  @media (max-width:720px){ section{padding:64px 0;} }
+
+  /* corner-bracket HUD frame, matches the app's own on-screen HUD corners */
+  .hud-frame{
+    position:relative;
+    background-image:
+      linear-gradient(var(--cyan-dark),var(--cyan-dark)), linear-gradient(var(--cyan-dark),var(--cyan-dark)),
+      linear-gradient(var(--cyan-dark),var(--cyan-dark)), linear-gradient(var(--cyan-dark),var(--cyan-dark)),
+      linear-gradient(var(--cyan-dark),var(--cyan-dark)), linear-gradient(var(--cyan-dark),var(--cyan-dark)),
+      linear-gradient(var(--cyan-dark),var(--cyan-dark)), linear-gradient(var(--cyan-dark),var(--cyan-dark));
+    background-repeat:no-repeat;
+    background-size:16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px;
+    background-position:
+      top 12px left 12px, top 12px left 12px,
+      top 12px right 12px, top 12px right 12px,
+      bottom 12px left 12px, bottom 12px left 12px,
+      bottom 12px right 12px, bottom 12px right 12px;
+  }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px;
+    background:rgba(10,15,26,.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(0,179,179,.25);
+  }
+  .logo{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:1.15rem; letter-spacing:.02em;
+    color:var(--cyan); display:flex; align-items:center; gap:10px;
+  }
+  .logo .dot{width:9px; height:9px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .topbar nav{display:flex; gap:28px; font-size:.85rem; color:var(--text-soft);}
+  .topbar nav a{color:var(--text-soft); text-decoration:none;}
+  .topbar nav a:hover{color:var(--cyan);}
+  @media (max-width:640px){ .topbar nav{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding-top:64px;
+    display:grid; grid-template-columns:1.1fr 1fr; gap:48px; align-items:center;
+    background-image: radial-gradient(rgba(0,255,255,.05) 1px, transparent 1px);
+    background-size:34px 34px;
+    background-position:center 40px;
+  }
+  @media (max-width:900px){ .hero{grid-template-columns:1fr; text-align:left;} }
+  .eyebrow-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:.72rem; color:var(--cyan-dark);
+    border:1px solid rgba(0,179,179,.4); border-radius:100px;
+    padding:5px 12px; margin-bottom:22px;
+  }
+  .hero h1{font-size:clamp(2.2rem,4.6vw,3.4rem); max-width:14ch;}
+  .hero p.lead{font-size:1.05rem; max-width:46ch;}
+  .btn{
+    display:inline-block; margin-top:18px;
+    background:var(--cyan); color:#00141a; font-weight:600;
+    font-family:'Space Grotesk', sans-serif;
+    padding:13px 26px; border-radius:6px; text-decoration:none;
+    border:none; cursor:pointer; font-size:.95rem;
+  }
+  .btn:hover{background:#5cffff;}
+
+  /* hero hud mockup */
+  .hud-hero{
+    position:relative; aspect-ratio:1/1; max-width:420px; margin:0 auto;
+    background:var(--panel); border-radius:14px; overflow:hidden;
+  }
+  .hud-hero svg{width:100%; height:100%;}
+  .hud-ring-outer{fill:none; stroke:var(--state-color); stroke-width:2; transition:stroke 1s;}
+  .hud-ring-inner{fill:none; stroke:rgba(127,168,184,.35); stroke-width:1;}
+  .hud-dashring{fill:none; stroke:rgba(127,168,184,.35); stroke-width:2; stroke-dasharray:3 9;
+    transform-origin:200px 200px; animation:spin 22s linear infinite;}
+  .hud-ticks line{stroke:rgba(127,168,184,.4); stroke-width:1.5;}
+  .hud-ticks{transform-origin:200px 200px; animation:spin 40s linear infinite;}
+  .hud-wave{fill:none; stroke:var(--state-color); stroke-width:2.5; transition:stroke 1s;
+    animation:breathe 2.6s ease-in-out infinite;}
+  .hud-baseline{stroke:rgba(127,168,184,.3); stroke-width:1;}
+  .hud-cardinal line{stroke:var(--state-color); stroke-width:2; transition:stroke 1s;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes breathe{0%,100%{transform:scaleY(1);} 50%{transform:scaleY(1.4);}}
+  .hud-corner-label{position:absolute; font-size:.62rem; color:var(--text-soft); letter-spacing:.05em;}
+  .hud-corner-label.tl{top:16px; left:20px;}
+  .hud-corner-label.br{bottom:16px; right:20px;}
+  .hud-telemetry{position:absolute; top:16px; right:18px; font-size:.6rem; line-height:1.5;
+    color:var(--cyan-dark); text-align:right;}
+  .hud-status{position:absolute; bottom:18px; left:20px; display:flex; align-items:center; gap:8px;
+    font-size:.78rem;}
+  .hud-status .dot{width:10px; height:10px; border-radius:50%; background:var(--state-color); transition:background 1s;}
+  .hud-status .label{color:var(--state-color); transition:color 1s;}
+
+  /* ---------- section heads ---------- */
+  .section-head{max-width:640px; margin-bottom:48px;}
+  .section-head h2{font-size:clamp(1.6rem,3vw,2.2rem);}
+
+  /* ---------- spotlight (large feature) ---------- */
+  .spotlight{
+    display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;
+  }
+  .spotlight.reverse .visual{order:2;}
+  .spotlight.reverse .copy{order:1;}
+  @media (max-width:860px){
+    .spotlight{grid-template-columns:1fr;}
+    .spotlight.reverse .visual,.spotlight.reverse .copy{order:initial;}
+  }
+  .spotlight h3{font-size:clamp(1.4rem,2.6vw,1.9rem); max-width:16ch;}
+  .visual{background:var(--panel); border-radius:12px; padding:22px;}
+
+  /* browser window mockup (game) */
+  .browser-mock{border-radius:8px; overflow:hidden; background:#050810; border:1px solid rgba(0,179,179,.25);}
+  .browser-bar{display:flex; align-items:center; gap:8px; padding:9px 12px; background:var(--panel-2);}
+  .browser-bar .tl-dot{width:8px; height:8px; border-radius:50%;}
+  .browser-bar .addr{margin-left:10px; font-size:.66rem; color:var(--text-soft); background:#0a0f1a;
+    padding:3px 10px; border-radius:4px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .game-canvas{position:relative; height:230px; background:
+      radial-gradient(1px 1px at 20px 30px, #7fa8b8 99%, transparent),
+      radial-gradient(1px 1px at 60px 90px, #7fa8b8 99%, transparent),
+      radial-gradient(1px 1px at 130px 40px, #7fa8b8 99%, transparent),
+      radial-gradient(1px 1px at 200px 110px, #7fa8b8 99%, transparent),
+      radial-gradient(1px 1px at 250px 60px, #7fa8b8 99%, transparent),
+      radial-gradient(1px 1px at 310px 150px, #7fa8b8 99%, transparent),
+      #060a13;
+    background-repeat:no-repeat;
+  }
+  .ship{position:absolute; left:38%; top:58%; width:0; height:0;
+    border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:18px solid var(--cyan);
+    filter:drop-shadow(0 0 6px var(--cyan));}
+  .score-hud{position:absolute; top:10px; left:12px; font-size:.66rem; color:var(--green);}
+  .lives-hud{position:absolute; top:10px; right:12px; font-size:.7rem; color:var(--red);}
+
+  /* photo editor mockup */
+  .editor-mock{display:grid; grid-template-columns:120px 1fr; gap:14px; background:#050810;
+    border:1px solid rgba(0,179,179,.25); border-radius:8px; padding:14px;}
+  .editor-tools{display:flex; flex-direction:column; gap:8px;}
+  .tool-pill{background:var(--panel-2); color:var(--text-soft); font-size:.62rem; padding:7px 8px;
+    border-radius:4px; text-align:center;}
+  .slider-row{margin-top:10px;}
+  .slider-row .lbl{font-size:.6rem; color:var(--text-soft); display:flex; justify-content:space-between; margin-bottom:3px;}
+  .slider-track{height:5px; background:#0a0f1a; border-radius:3px; overflow:hidden;}
+  .slider-fill{height:100%; background:var(--cyan);}
+  .editor-canvas{position:relative; border-radius:6px; overflow:hidden; background:
+    linear-gradient(#12253a,#0a1622);}
+  .editor-canvas svg{width:100%; height:100%;}
+  .brush-badge{position:absolute; bottom:8px; right:8px; background:var(--red); color:#fff;
+    font-size:.58rem; padding:3px 8px; border-radius:4px;}
+
+  /* ---------- small feature grid ---------- */
+  .feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  @media (max-width:920px){ .feature-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .feature-grid{grid-template-columns:1fr;} }
+  .feature-card{background:var(--panel); border-radius:10px; padding:18px; border:1px solid rgba(127,168,184,.12);}
+  .feature-card .mock{height:96px; background:#050810; border-radius:6px; margin-bottom:14px;
+    position:relative; overflow:hidden;}
+  .feature-card h4{font-family:'Space Grotesk', sans-serif; font-size:.95rem; margin:0 0 6px; color:var(--text);}
+  .feature-card p{font-size:.82rem; margin:0;}
+
+  /* chat bubble mock */
+  .mock-chat{padding:10px; font-size:.55rem; display:flex; flex-direction:column; gap:6px;}
+  .bubble{padding:5px 9px; border-radius:5px; max-width:78%;}
+  .bubble.sen{align-self:flex-end; background:#0f2734; color:var(--cyan);}
+  .bubble.venus{align-self:flex-start; background:#131d2e; color:var(--text);}
+
+  /* screen-vision mock */
+  .mock-screen{display:flex; align-items:center; justify-content:center;}
+  .monitor{width:70%; height:56px; border:2px solid var(--cyan-dark); border-radius:4px; position:relative;
+    background:linear-gradient(#0d1a26,#080f18);}
+  .monitor::after{content:""; position:absolute; left:0; right:0; top:50%; height:1px;
+    background:var(--cyan); opacity:.6; animation:scan 2.2s linear infinite;}
+  @keyframes scan{0%{top:6%;} 100%{top:92%;}}
+  .monitor .eye{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem;}
+
+  /* app launcher mock */
+  .mock-apps{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:14px;}
+  .app-icon{aspect-ratio:1; border-radius:6px; background:var(--panel-2);}
+  .app-icon.active{background:var(--cyan); box-shadow:0 0 10px var(--cyan);}
+
+  /* media player mock */
+  .mock-media{display:flex; align-items:center; gap:10px; padding:20px 16px;}
+  .play-btn{width:26px; height:26px; border-radius:50%; background:var(--cyan); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:.6rem; color:#00141a;}
+  .media-bar{flex:1; height:4px; background:#152036; border-radius:3px; overflow:hidden;}
+  .media-bar span{display:block; width:38%; height:100%; background:var(--cyan-dark);}
+
+  /* weather mock */
+  .mock-weather{display:flex; align-items:center; gap:12px; padding:18px;}
+  .sun{width:34px; height:34px; border-radius:50%; background:var(--yellow); box-shadow:0 0 14px var(--yellow);}
+  .weather-temp{font-family:'Space Grotesk',sans-serif; font-size:1.3rem; color:var(--text);}
+  .weather-city{font-size:.62rem; color:var(--text-soft);}
+
+  /* map mock */
+  .mock-map{position:relative; background:
+    linear-gradient(rgba(127,168,184,.08) 1px, transparent 1px) 0 0/16px 16px,
+    linear-gradient(90deg, rgba(127,168,184,.08) 1px, transparent 1px) 0 0/16px 16px, #0a1420;
+    height:100%;}
+  .pin{position:absolute; width:8px; height:8px; border-radius:50% 50% 50% 0; background:var(--red);
+    transform:rotate(45deg);}
+  .radius-ring{position:absolute; border:1px dashed var(--cyan-dark); border-radius:50%; opacity:.5;}
+
+  /* translate mock */
+  .mock-translate{display:flex; flex-direction:column; gap:8px; padding:14px; font-size:.62rem;}
+  .lang-bubble{padding:6px 10px; border-radius:5px; display:flex; justify-content:space-between;}
+  .lang-bubble.from{background:#0f2734; color:var(--cyan);}
+  .lang-bubble.to{background:#131d2e; color:var(--text);}
+
+  /* note/timer mock */
+  .mock-note{display:flex; gap:10px; padding:14px; align-items:flex-start;}
+  .sticky{background:#2a2210; border-left:3px solid var(--yellow); color:#e8dcae; font-size:.58rem;
+    padding:8px; border-radius:2px; flex:1;}
+  .timer-badge{background:var(--panel-2); color:var(--purple); font-size:.6rem; padding:6px 8px;
+    border-radius:5px; white-space:nowrap;}
+
+  /* ---------- self-mod spotlight ---------- */
+  .code-mock{background:#050810; border:1px solid rgba(0,179,179,.25); border-radius:8px; overflow:hidden;}
+  .code-bar{display:flex; justify-content:space-between; align-items:center; padding:9px 14px;
+    background:var(--panel-2); font-size:.66rem; color:var(--text-soft);}
+  .backup-tag{background:rgba(0,255,136,.12); color:var(--green); padding:2px 8px; border-radius:4px; font-size:.62rem;}
+  .code-lines{padding:14px 16px; font-size:.72rem; line-height:1.9;}
+  .code-lines .add{color:var(--green);}
+  .code-lines .rem{color:var(--red); opacity:.7; text-decoration:line-through;}
+  .code-lines .plain{color:var(--text-soft);}
+
+  /* ---------- how it works ---------- */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:32px; counter-reset:step;}
+  @media (max-width:800px){ .steps{grid-template-columns:1fr;} }
+  .step{border-top:2px solid var(--cyan-dark); padding-top:16px;}
+  .step .num{font-family:'Space Grotesk',sans-serif; color:var(--cyan); font-size:1.6rem; font-weight:700;}
+  .step h4{font-family:'Space Grotesk',sans-serif; margin:8px 0 6px; font-size:1.05rem;}
+
+  /* ---------- tech strip ---------- */
+  .tech-strip{background:var(--panel);}
+  .tech-strip .container{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;}
+  @media (max-width:800px){ .tech-strip .container{grid-template-columns:1fr;} }
+  .pill-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+  .pill{border:1px solid rgba(0,179,179,.35); color:var(--cyan-dark); font-size:.72rem;
+    padding:6px 12px; border-radius:100px;}
+
+  /* ---------- comments ---------- */
+  .comment-form{max-width:640px; display:flex; flex-direction:column; gap:14px;}
+  .form-row{display:flex; gap:12px; flex-wrap:wrap;}
+  .comment-form input[type="text"], .comment-form select, .comment-form textarea{
+    background:var(--panel-2); border:1px solid rgba(127,168,184,.25); color:var(--text);
+    font-family:'JetBrains Mono', monospace; font-size:.85rem; padding:10px 12px; border-radius:6px;
+  }
+  .comment-form input[type="text"]{flex:1; min-width:180px;}
+  .comment-form select{min-width:160px;}
+  .comment-form textarea{min-height:110px; resize:vertical;}
+  .comment-form input:focus, .comment-form select:focus, .comment-form textarea:focus{
+    outline:none; border-color:var(--cyan-dark);
+  }
+  .comment-form .btn{align-self:flex-start; border:none;}
+  .form-status{font-size:.8rem; margin:8px 0 0;}
+  .launch-tag{display:inline-flex; align-items:center; gap:8px; font-size:.72rem; color:var(--purple);
+    border:1px solid rgba(181,101,245,.4); border-radius:100px; padding:5px 12px; margin-top:10px;}
+
+  footer{padding:40px 0; border-top:1px solid rgba(127,168,184,.15);}
+  footer .container{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
+  footer p{font-size:.78rem; margin:0;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><span class="dot"></span>VENÜS</div>
+  <nav>
+    <a href="#ozellikler">Özellikler</a>
+    <a href="#nasil-calisir">Nasıl çalışır</a>
+    <a href="#teknoloji">Teknoloji</a>
+    <a href="#yorumlar">Yorumlar</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero container">
+    <div>
+      <span class="eyebrow-tag">Türkçe konuşan masaüstü asistanı</span>
+      <h1>Bilgisayarınla konuş, gerisini o halletsin</h1>
+      <p class="lead">Venüs; sesini dinleyen, ekranını gören, senin için oyun yazan ve gerektiğinde kendi
+      kaynak kodunu bile güncelleyen bir yapay zeka asistanı. Python ve Tkinter ile yazıldı,
+      aklını bilgisayarında yerel çalışan bir dil modelinden alıyor.</p>
+      <a href="#ozellikler" class="btn">Neler yapabildiğini gör</a>
+    </div>
+    <div class="hud-hero hud-frame">
+      <div class="hud-corner-label tl">VENÜS OS</div>
+      <div class="hud-corner-label br">v1.0</div>
+      <div class="hud-telemetry" id="telemetry">SYNC 98.4%<br>SIG -41dB<br>CPU 12%</div>
+      <svg viewBox="0 0 400 400">
+        <circle class="hud-dashring" cx="200" cy="200" r="176"/>
+        <g class="hud-ticks">
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(0 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(30 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(60 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(90 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(120 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(150 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(180 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(210 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(240 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(270 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(300 200 200)"/>
+          <line x1="200" y1="44" x2="200" y2="60" transform="rotate(330 200 200)"/>
+        </g>
+        <circle class="hud-ring-outer" cx="200" cy="200" r="150"/>
+        <circle class="hud-ring-inner" cx="200" cy="200" r="136"/>
+        <g class="hud-cardinal">
+          <line x1="200" y1="42" x2="200" y2="56"/>
+          <line x1="358" y1="200" x2="344" y2="200"/>
+          <line x1="200" y1="358" x2="200" y2="344"/>
+          <line x1="42" y1="200" x2="56" y2="200"/>
+        </g>
+        <line class="hud-baseline" x1="90" y1="200" x2="310" y2="200"/>
+        <path class="hud-wave" d="M90,200 Q120,160 150,200 T210,200 T270,200 T310,200"/>
+      </svg>
+      <div class="hud-status"><span class="dot"></span><span class="label" id="hud-label">Bekliyor</span></div>
+    </div>
+  </section>
+
+  <!-- SPOTLIGHT A: OYUN YAPMA -->
+  <section id="ozellikler" class="container">
+    <div class="spotlight">
+      <div class="visual">
+        <div class="browser-mock">
+          <div class="browser-bar">
+            <span class="tl-dot" style="background:#ff5f57"></span>
+            <span class="tl-dot" style="background:#febc2e"></span>
+            <span class="tl-dot" style="background:#28c840"></span>
+            <span class="addr">file:///VenusProjeler/proje_8f2a1c.html</span>
+          </div>
+          <div class="game-canvas">
+            <div class="score-hud">SKOR: 240</div>
+            <div class="lives-hud">♥ ♥ ♥</div>
+            <div class="ship"></div>
+          </div>
+        </div>
+      </div>
+      <div class="copy">
+        <h3>Aklındaki oyunu sesle anlatman yeterli</h3>
+        <p>"Uzay temalı bir kaçış oyunu yap" dediğinde Venüs, yerel çalışan yapay zekasıyla sıfırdan
+        bir HTML5 oyunu yazar, tarayıcında otomatik açar ve kodunu kopyalayabileceğin ayrı bir
+        pencerede gösterir.</p>
+        <p>Beğenmediğin bir şey mi var? "Buna bir skor tablosu ekle" ya da "düşman hareketini
+        hızlandır" demen yeterli — Venüs var olan oyunu bozmadan günceller.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPOTLIGHT B: FOTO DÜZENLEYİCİ -->
+  <section class="container">
+    <div class="spotlight reverse">
+      <div class="visual">
+        <div class="editor-mock">
+          <div class="editor-tools">
+            <div class="tool-pill">📁 Aç</div>
+            <div class="tool-pill">💾 Kaydet</div>
+            <div class="tool-pill">↩ Geri al</div>
+            <div class="slider-row">
+              <div class="lbl"><span>Parlaklık</span><span>112%</span></div>
+              <div class="slider-track"><div class="slider-fill" style="width:56%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="lbl"><span>Kontrast</span><span>100%</span></div>
+              <div class="slider-track"><div class="slider-fill" style="width:50%"></div></div>
+            </div>
+            <div class="slider-row">
+              <div class="lbl"><span>Doygunluk</span><span>128%</span></div>
+              <div class="slider-track"><div class="slider-fill" style="width:64%"></div></div>
+            </div>
+          </div>
+          <div class="editor-canvas">
+            <svg viewBox="0 0 200 150">
+              <rect width="200" height="150" fill="#0e1c2c"/>
+              <circle cx="150" cy="34" r="16" fill="#ffd60a" opacity=".85"/>
+              <polygon points="0,150 60,80 100,120 140,60 200,150" fill="#16324a"/>
+              <polygon points="0,150 40,110 80,140 120,95 160,140 200,150" fill="#0e1c2c" opacity=".7"/>
+              <path d="M20,40 Q40,20 70,42" stroke="#ff2d55" stroke-width="3" fill="none" stroke-linecap="round"/>
+            </svg>
+            <div class="brush-badge">🖌 çizim aktif</div>
+          </div>
+        </div>
+      </div>
+      <div class="copy">
+        <h3>Kendi foto editörün, sözünü dinliyor</h3>
+        <p>Venüs'ün içine gömülü düzenleyici; parlaklığı, kontrastı ve doygunluğu canlı önizlemeyle
+        ayarlar, siyah-beyaz veya sepya gibi filtreler uygular, kırpar ve elle çizim yapmana izin verir.</p>
+        <p>Sohbete bir fotoğraf eklediğinde işi tamamen yapay zekaya bırakabilirsin: "üstündeki
+        tişörtü kırmızı yap" demen, fotoğrafı baştan düzenlemesi için yeterli.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SMALL FEATURE GRID -->
+  <section class="container">
+    <div class="section-head">
+      <h2>Ve daha fazlası, tek bir sesli komutla</h2>
+      <p>Venüs'ün elliye yakın hazır komutu var; en çok kullanılan on tanesi burada.</p>
+    </div>
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="mock mock-chat">
+          <div class="bubble sen">Bugün hava nasıl?</div>
+          <div class="bubble venus">İzmir'de hava açık, 27 derece.</div>
+        </div>
+        <h4>Sesli ve yazılı sohbet</h4>
+        <p>Mikrofona konuş ya da yaz — Venüs ikisini de aynı anda anlar ve sesli yanıt verir.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-screen">
+          <div class="monitor"><div class="eye">👁</div></div>
+        </div>
+        <h4>Ekranını görüp yorumlar</h4>
+        <p>"Ekranımı gör" dediğinde anlık görüntü alır, sorularını o görüntüye bakarak yanıtlar.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-apps">
+          <div class="app-icon active"></div><div class="app-icon"></div><div class="app-icon"></div>
+          <div class="app-icon"></div><div class="app-icon"></div><div class="app-icon"></div>
+        </div>
+        <h4>Uygulamaları sesle açar</h4>
+        <p>Bilgisayarındaki tüm uygulamaları tek seferde tarar, adını söylediğinde açar.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-media">
+          <div class="play-btn">▶</div>
+          <div class="media-bar"><span></span></div>
+        </div>
+        <h4>Müziği ve sesi yönetir</h4>
+        <p>Şarkı değiştirmek, sesi kısmak ya da durdurmak için Venüs'e söylemen yeter.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-weather">
+          <div class="sun"></div>
+          <div><div class="weather-temp">27°</div><div class="weather-city">İzmir</div></div>
+        </div>
+        <h4>Hava durumu ve gündem</h4>
+        <p>Herhangi bir şehrin hava durumunu okur, istersen günün öne çıkan başlıklarını özetler.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-map">
+          <div class="radius-ring" style="width:70px; height:70px; left:38%; top:20%;"></div>
+          <div class="pin" style="left:44%; top:44%;"></div>
+          <div class="pin" style="left:60%; top:30%;"></div>
+          <div class="pin" style="left:30%; top:60%;"></div>
+        </div>
+        <h4>Yakındaki restoranları bulur</h4>
+        <p>Konumunu bulup çevredeki restoranları mesafeye göre sıralar, saatleriyle gösterir.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-translate">
+          <div class="lang-bubble from"><span>TR</span><span>Nasılsın?</span></div>
+          <div class="lang-bubble to"><span>EN</span><span>How are you?</span></div>
+        </div>
+        <h4>Anında çeviri yapar</h4>
+        <p>Hangi dile çevirmek istediğini söyle, Venüs çeviriyi sesli okusun.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="mock mock-note">
+          <div class="sticky">Toplantı notları: yeni arayüz taslağını paylaş</div>
+          <div class="timer-badge">⏱ 5 dk</div>
+        </div>
+        <h4>Not tutar, hatırlatıcı kurar</h4>
+        <p>"5 dakika sonra hatırlat" de, notlarını da istediğin an sana geri okur.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SELF-MODIFYING SPOTLIGHT -->
+  <section class="container">
+    <div class="spotlight">
+      <div class="visual">
+        <div class="code-mock">
+          <div class="code-bar">
+            <span>cyber_venus.py</span>
+            <span class="backup-tag">✓ yedeklendi</span>
+          </div>
+          <div class="code-lines">
+            <div class="plain">def intent_muzik_oynat_duraklat(self, komut):</div>
+            <div class="rem">&nbsp;&nbsp;pass</div>
+            <div class="add">&nbsp;&nbsp;self._medya_tusu_gonder(VK_MEDIA_PLAY_PAUSE)</div>
+            <div class="add">&nbsp;&nbsp;self.sessiz_cevap("Oynatma durumu değişti.")</div>
+          </div>
+        </div>
+      </div>
+      <div class="copy">
+        <h3>Kendi kaynak kodunu bile güncelleyebiliyor</h3>
+        <p>"Kendine müzik kontrol komutu ekle" dediğinde Venüs kendi Python dosyasını okur, istediğin
+        değişikliği yerel yapay zeka ile yazar, değiştirmeden önce mevcut hâlini yedekler ve
+        sözdizimini doğruladıktan sonra kendini yeniden başlatır.</p>
+        <p>Bir şey ters giderse "eskiye dön" demen, son yedeğe geri dönmesi için yeterli.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="nasil-calisir" class="container">
+    <div class="section-head">
+      <h2>Bir komut, üç adımda aksiyona dönüşür</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <h4>Konuş ya da yaz</h4>
+        <p>Mikrofonu aç ya da mesaj kutusuna yaz, komutunu ilet.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h4>Venüs niyetini çözer</h4>
+        <p>Önce kendi komut tablosunda arar; karşılığı yoksa yerel yapay zeka modeline sorar.</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h4>Aksiyonu alır, sesli anlatır</h4>
+        <p>İlgili işlemi yapar — uygulama açar, oyun yazar, fotoğraf düzenler — ve sonucu Türkçe
+        sesle özetler.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STRIP -->
+  <section id="teknoloji" class="tech-strip">
+    <div class="container">
+      <div>
+        <h2>Beyni bilgisayarında çalışıyor</h2>
+        <p>Sohbetin, oyun yazımının ve ekran yorumlamasının beyni bilgisayarında yerel çalışan bir
+        dil modelinden (Ollama üzerinden) geliyor. Sesi yazıya çevirme ve yazıyı seslendirme
+        adımlarında ise online servisler kullanılıyor.</p>
+        <div class="pill-row">
+          <span class="pill">Python</span>
+          <span class="pill">Tkinter</span>
+          <span class="pill">Ollama</span>
+          <span class="pill">SQLite</span>
+          <span class="pill">Edge TTS</span>
+        </div>
+      </div>
+      <div>
+        <h2>Konuşma geçmişini unutmaz</h2>
+        <p>Her soru-cevap SQLite veritabanına kaydedilir; "neler konuştuk" dediğinde son
+        konuşmalarını hatırlar. Notların ve kayıtlı uygulamaların da aynı şekilde saklanır.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- YORUMLAR -->
+  <section id="yorumlar" class="container">
+    <div class="section-head">
+      <h2>Ne düşünüyorsun?</h2>
+      <p>Eksik bulduğun bir şey mi var, yoksa bir özelliğe mi bayıldın? Aşağıya yaz, doğrudan bana ulaşsın.</p>
+    </div>
+    <form id="yorum-form" class="comment-form">
+      <div class="form-row">
+        <input type="text" name="name" placeholder="Adın (istersen boş bırak)">
+        <select name="tur">
+          <option value="Öneri">Öneri</option>
+          <option value="Eksik bir şey var">Eksik bir şey var</option>
+          <option value="Çok beğendim">Çok beğendim</option>
+        </select>
+      </div>
+      <textarea name="message" placeholder="Yorumunu yaz..." required></textarea>
+      <input type="hidden" name="access_key" value="BURAYA_WEB3FORMS_ANAHTARINI_YAPISTIR">
+      <input type="hidden" name="subject" value="Venüs sitesine yeni yorum geldi">
+      <button type="submit" class="btn">Gönder</button>
+      <p id="form-status" class="form-status"></p>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div>
+      <p style="color:var(--text-soft)">C.Y.B.E.R — Venüs OS v1.0</p>
+      <span class="launch-tag">Tahmini çıkış tarihi: 2027</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const states = [
+    {label:'Bekliyor', color:'#2f86ff'},
+    {label:'Dinliyor', color:'#ffd60a'},
+    {label:'Düşünüyor', color:'#b565f5'},
+    {label:'Konuşuyor', color:'#00ff88'}
+  ];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    let i = 0;
+    const hero = document.querySelector('.hud-hero');
+    const label = document.getElementById('hud-label');
+    setInterval(() => {
+      i = (i + 1) % states.length;
+      hero.style.setProperty('--state-color', states[i].color);
+      label.textContent = states[i].label;
+    }, 2600);
+  }
+
+  const telemetry = document.getElementById('telemetry');
+  if(!reduceMotion){
+    setInterval(() => {
+      const sync = (96 + Math.random() * 3.9).toFixed(1);
+      const sig = (-52 + Math.random() * 18).toFixed(1);
+      const cpu = Math.floor(3 + Math.random() * 24);
+      telemetry.innerHTML = `SYNC ${sync}%<br>SIG ${sig}dB<br>CPU ${cpu}%`;
+    }, 1400);
+  }
+
+  const yorumForm = document.getElementById('yorum-form');
+  const formStatus = document.getElementById('form-status');
+  yorumForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    formStatus.textContent = 'Gönderiliyor...';
+    formStatus.style.color = 'var(--text-soft)';
+    const formData = new FormData(yorumForm);
+    try{
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method:'POST',
+        headers:{ 'Accept':'application/json' },
+        body: formData
+      });
+      const data = await res.json();
+      if(data.success){
+        formStatus.textContent = 'Teşekkürler, yorumun iletildi.';
+        formStatus.style.color = 'var(--green)';
+        yorumForm.reset();
+      } else {
+        formStatus.textContent = 'Bir sorun oldu, tekrar dener misin?';
+        formStatus.style.color = 'var(--red)';
+      }
+    }catch(err){
+      formStatus.textContent = 'Gönderilemedi, internet bağlantını kontrol et.';
+      formStatus.style.color = 'var(--red)';
+    }
+  });
+</script>
+
+</body>
+</html>
