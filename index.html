@@ -1,6 +1,3 @@
-
-
-Venus tanitim · HTML
 <!doctype html>
 <html lang="tr">
 <head>
@@ -28,7 +25,7 @@ Venus tanitim · HTML
     --maxw:1120px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
   body{
     margin:0;
     background:var(--bg);
@@ -37,6 +34,8 @@ Venus tanitim · HTML
     font-size:16px;
     line-height:1.65;
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    max-width:100vw;
   }
   h1,h2,h3{
     font-family:'Space Grotesk', sans-serif;
@@ -88,6 +87,13 @@ Venus tanitim · HTML
   .topbar .nav-desktop a{color:var(--text-soft); text-decoration:none;}
   .topbar .nav-desktop a:hover{color:var(--cyan);}
  
+  .lang-select{
+    background:var(--panel-2); color:var(--text-soft); border:1px solid rgba(0,179,179,.3);
+    border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:.75rem;
+    padding:6px 8px; margin-left:16px; cursor:pointer;
+  }
+  .lang-select:focus{outline:none; border-color:var(--cyan-dark);}
+ 
   .menu-btn{display:none; flex-direction:column; justify-content:center; gap:5px;
     width:36px; height:36px; background:none; border:none; cursor:pointer; padding:0;}
   .menu-btn span{display:block; width:100%; height:2px; background:var(--cyan); border-radius:2px;}
@@ -118,6 +124,8 @@ Venus tanitim · HTML
     .btn{width:100%; text-align:center;}
     section{padding:56px 0;}
     .hero{padding-top:36px;}
+    .game-canvas{height:170px;}
+    .code-lines{font-size:.66rem;}
   }
   .eyebrow-tag{
     display:inline-flex; align-items:center; gap:8px;
@@ -179,14 +187,14 @@ Venus tanitim · HTML
     .spotlight.reverse .visual,.spotlight.reverse .copy{order:initial;}
   }
   .spotlight h3{font-size:clamp(1.4rem,2.6vw,1.9rem); max-width:16ch;}
-  .visual{background:var(--panel); border-radius:12px; padding:22px;}
+  .visual{background:var(--panel); border-radius:12px; padding:22px; min-width:0;}
  
   /* browser window mockup (game) */
   .browser-mock{border-radius:8px; overflow:hidden; background:#050810; border:1px solid rgba(0,179,179,.25);}
   .browser-bar{display:flex; align-items:center; gap:8px; padding:9px 12px; background:var(--panel-2);}
   .browser-bar .tl-dot{width:8px; height:8px; border-radius:50%;}
   .browser-bar .addr{margin-left:10px; font-size:.66rem; color:var(--text-soft); background:#0a0f1a;
-    padding:3px 10px; border-radius:4px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    padding:3px 10px; border-radius:4px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .game-canvas{position:relative; height:230px; background:
       radial-gradient(1px 1px at 20px 30px, #7fa8b8 99%, transparent),
       radial-gradient(1px 1px at 60px 90px, #7fa8b8 99%, transparent),
@@ -290,7 +298,7 @@ Venus tanitim · HTML
   .code-bar{display:flex; justify-content:space-between; align-items:center; padding:9px 14px;
     background:var(--panel-2); font-size:.66rem; color:var(--text-soft);}
   .backup-tag{background:rgba(0,255,136,.12); color:var(--green); padding:2px 8px; border-radius:4px; font-size:.62rem;}
-  .code-lines{padding:14px 16px; font-size:.72rem; line-height:1.9;}
+  .code-lines{padding:14px 16px; font-size:.72rem; line-height:1.9; overflow-wrap:anywhere; word-break:break-word;}
   .code-lines .add{color:var(--green);}
   .code-lines .rem{color:var(--red); opacity:.7; text-decoration:line-through;}
   .code-lines .plain{color:var(--text-soft);}
@@ -338,20 +346,21 @@ Venus tanitim · HTML
 <header class="topbar">
   <div class="logo"><span class="dot"></span>VENÜS</div>
   <nav class="nav-desktop">
-    <a href="#ozellikler">Özellikler</a>
-    <a href="#nasil-calisir">Nasıl çalışır</a>
-    <a href="#teknoloji">Teknoloji</a>
-    <a href="#yorumlar">Yorumlar</a>
+    <a href="#ozellikler" data-i18n="navf">Özellikler</a>
+    <a href="#nasil-calisir" data-i18n="navh">Nasıl çalışır</a>
+    <a href="#teknoloji" data-i18n="navt">Teknoloji</a>
+    <a href="#yorumlar" data-i18n="navc">Yorumlar</a>
   </nav>
+  <select id="lang-select" class="lang-select" aria-label="Dil / Language"></select>
   <button class="menu-btn" id="menu-btn" aria-label="Menüyü aç/kapat">
     <span></span><span></span><span></span>
   </button>
 </header>
 <nav class="nav-mobile" id="nav-mobile">
-  <a href="#ozellikler">Özellikler</a>
-  <a href="#nasil-calisir">Nasıl çalışır</a>
-  <a href="#teknoloji">Teknoloji</a>
-  <a href="#yorumlar">Yorumlar</a>
+  <a href="#ozellikler" data-i18n="navf">Özellikler</a>
+  <a href="#nasil-calisir" data-i18n="navh">Nasıl çalışır</a>
+  <a href="#teknoloji" data-i18n="navt">Teknoloji</a>
+  <a href="#yorumlar" data-i18n="navc">Yorumlar</a>
 </nav>
  
 <main>
@@ -359,12 +368,12 @@ Venus tanitim · HTML
   <!-- HERO -->
   <section class="hero container">
     <div>
-      <span class="eyebrow-tag">Türkçe konuşan masaüstü asistanı</span>
-      <h1>Bilgisayarınla konuş, gerisini o halletsin</h1>
-      <p class="lead">Venüs; sesini dinleyen, ekranını gören, senin için oyun yazan ve gerektiğinde kendi
+      <span class="eyebrow-tag" data-i18n="eyebrow">Türkçe konuşan masaüstü asistanı</span>
+      <h1 data-i18n="h1">Bilgisayarınla konuş, gerisini o halletsin</h1>
+      <p class="lead" data-i18n="lead">Venüs; sesini dinleyen, ekranını gören, senin için oyun yazan ve gerektiğinde kendi
       kaynak kodunu bile güncelleyen bir yapay zeka asistanı. Python ve Tkinter ile yazıldı,
       aklını bilgisayarında yerel çalışan bir dil modelinden alıyor.</p>
-      <a href="#ozellikler" class="btn">Neler yapabildiğini gör</a>
+      <a href="#ozellikler" class="btn" data-i18n="btn">Neler yapabildiğini gör</a>
     </div>
     <div class="hud-hero hud-frame">
       <div class="hud-corner-label tl">VENÜS OS</div>
@@ -420,11 +429,11 @@ Venus tanitim · HTML
         </div>
       </div>
       <div class="copy">
-        <h3>Aklındaki oyunu sesle anlatman yeterli</h3>
-        <p>"Uzay temalı bir kaçış oyunu yap" dediğinde Venüs, yerel çalışan yapay zekasıyla sıfırdan
+        <h3 data-i18n="s1h">Aklındaki oyunu sesle anlatman yeterli</h3>
+        <p data-i18n="s1p1">"Uzay temalı bir kaçış oyunu yap" dediğinde Venüs, yerel çalışan yapay zekasıyla sıfırdan
         bir HTML5 oyunu yazar, tarayıcında otomatik açar ve kodunu kopyalayabileceğin ayrı bir
         pencerede gösterir.</p>
-        <p>Beğenmediğin bir şey mi var? "Buna bir skor tablosu ekle" ya da "düşman hareketini
+        <p data-i18n="s1p2">Beğenmediğin bir şey mi var? "Buna bir skor tablosu ekle" ya da "düşman hareketini
         hızlandır" demen yeterli — Venüs var olan oyunu bozmadan günceller.</p>
       </div>
     </div>
@@ -465,10 +474,10 @@ Venus tanitim · HTML
         </div>
       </div>
       <div class="copy">
-        <h3>Kendi foto editörün, sözünü dinliyor</h3>
-        <p>Venüs'ün içine gömülü düzenleyici; parlaklığı, kontrastı ve doygunluğu canlı önizlemeyle
+        <h3 data-i18n="s2h">Kendi foto editörün, sözünü dinliyor</h3>
+        <p data-i18n="s2p1">Venüs'ün içine gömülü düzenleyici; parlaklığı, kontrastı ve doygunluğu canlı önizlemeyle
         ayarlar, siyah-beyaz veya sepya gibi filtreler uygular, kırpar ve elle çizim yapmana izin verir.</p>
-        <p>Sohbete bir fotoğraf eklediğinde işi tamamen yapay zekaya bırakabilirsin: "üstündeki
+        <p data-i18n="s2p2">Sohbete bir fotoğraf eklediğinde işi tamamen yapay zekaya bırakabilirsin: "üstündeki
         tişörtü kırmızı yap" demen, fotoğrafı baştan düzenlemesi için yeterli.</p>
       </div>
     </div>
@@ -477,8 +486,8 @@ Venus tanitim · HTML
   <!-- SMALL FEATURE GRID -->
   <section class="container">
     <div class="section-head">
-      <h2>Ve daha fazlası, tek bir sesli komutla</h2>
-      <p>Venüs'ün elliye yakın hazır komutu var; en çok kullanılan on tanesi burada.</p>
+      <h2 data-i18n="gh">Ve daha fazlası, tek bir sesli komutla</h2>
+      <p data-i18n="gp">Venüs'ün elliye yakın hazır komutu var; en çok kullanılan on tanesi burada.</p>
     </div>
     <div class="feature-grid">
  
@@ -487,16 +496,16 @@ Venus tanitim · HTML
           <div class="bubble sen">Bugün hava nasıl?</div>
           <div class="bubble venus">İzmir'de hava açık, 27 derece.</div>
         </div>
-        <h4>Sesli ve yazılı sohbet</h4>
-        <p>Mikrofona konuş ya da yaz — Venüs ikisini de aynı anda anlar ve sesli yanıt verir.</p>
+        <h4 data-i18n="f1h">Sesli ve yazılı sohbet</h4>
+        <p data-i18n="f1p">Mikrofona konuş ya da yaz — Venüs ikisini de aynı anda anlar ve sesli yanıt verir.</p>
       </div>
  
       <div class="feature-card">
         <div class="mock mock-screen">
           <div class="monitor"><div class="eye">👁</div></div>
         </div>
-        <h4>Ekranını görüp yorumlar</h4>
-        <p>"Ekranımı gör" dediğinde anlık görüntü alır, sorularını o görüntüye bakarak yanıtlar.</p>
+        <h4 data-i18n="f2h">Ekranını görüp yorumlar</h4>
+        <p data-i18n="f2p">"Ekranımı gör" dediğinde anlık görüntü alır, sorularını o görüntüye bakarak yanıtlar.</p>
       </div>
  
       <div class="feature-card">
@@ -504,8 +513,8 @@ Venus tanitim · HTML
           <div class="app-icon active"></div><div class="app-icon"></div><div class="app-icon"></div>
           <div class="app-icon"></div><div class="app-icon"></div><div class="app-icon"></div>
         </div>
-        <h4>Uygulamaları sesle açar</h4>
-        <p>Bilgisayarındaki tüm uygulamaları tek seferde tarar, adını söylediğinde açar.</p>
+        <h4 data-i18n="f3h">Uygulamaları sesle açar</h4>
+        <p data-i18n="f3p">Bilgisayarındaki tüm uygulamaları tek seferde tarar, adını söylediğinde açar.</p>
       </div>
  
       <div class="feature-card">
@@ -513,8 +522,8 @@ Venus tanitim · HTML
           <div class="play-btn">▶</div>
           <div class="media-bar"><span></span></div>
         </div>
-        <h4>Müziği ve sesi yönetir</h4>
-        <p>Şarkı değiştirmek, sesi kısmak ya da durdurmak için Venüs'e söylemen yeter.</p>
+        <h4 data-i18n="f4h">Müziği ve sesi yönetir</h4>
+        <p data-i18n="f4p">Şarkı değiştirmek, sesi kısmak ya da durdurmak için Venüs'e söylemen yeter.</p>
       </div>
  
       <div class="feature-card">
@@ -522,8 +531,8 @@ Venus tanitim · HTML
           <div class="sun"></div>
           <div><div class="weather-temp">27°</div><div class="weather-city">İzmir</div></div>
         </div>
-        <h4>Hava durumu ve gündem</h4>
-        <p>Herhangi bir şehrin hava durumunu okur, istersen günün öne çıkan başlıklarını özetler.</p>
+        <h4 data-i18n="f5h">Hava durumu ve gündem</h4>
+        <p data-i18n="f5p">Herhangi bir şehrin hava durumunu okur, istersen günün öne çıkan başlıklarını özetler.</p>
       </div>
  
       <div class="feature-card">
@@ -533,8 +542,8 @@ Venus tanitim · HTML
           <div class="pin" style="left:60%; top:30%;"></div>
           <div class="pin" style="left:30%; top:60%;"></div>
         </div>
-        <h4>Yakındaki restoranları bulur</h4>
-        <p>Konumunu bulup çevredeki restoranları mesafeye göre sıralar, saatleriyle gösterir.</p>
+        <h4 data-i18n="f6h">Yakındaki restoranları bulur</h4>
+        <p data-i18n="f6p">Konumunu bulup çevredeki restoranları mesafeye göre sıralar, saatleriyle gösterir.</p>
       </div>
  
       <div class="feature-card">
@@ -542,8 +551,8 @@ Venus tanitim · HTML
           <div class="lang-bubble from"><span>TR</span><span>Nasılsın?</span></div>
           <div class="lang-bubble to"><span>EN</span><span>How are you?</span></div>
         </div>
-        <h4>Anında çeviri yapar</h4>
-        <p>Hangi dile çevirmek istediğini söyle, Venüs çeviriyi sesli okusun.</p>
+        <h4 data-i18n="f7h">Anında çeviri yapar</h4>
+        <p data-i18n="f7p">Hangi dile çevirmek istediğini söyle, Venüs çeviriyi sesli okusun.</p>
       </div>
  
       <div class="feature-card">
@@ -551,8 +560,8 @@ Venus tanitim · HTML
           <div class="sticky">Toplantı notları: yeni arayüz taslağını paylaş</div>
           <div class="timer-badge">⏱ 5 dk</div>
         </div>
-        <h4>Not tutar, hatırlatıcı kurar</h4>
-        <p>"5 dakika sonra hatırlat" de, notlarını da istediğin an sana geri okur.</p>
+        <h4 data-i18n="f8h">Not tutar, hatırlatıcı kurar</h4>
+        <p data-i18n="f8p">"5 dakika sonra hatırlat" de, notlarını da istediğin an sana geri okur.</p>
       </div>
  
     </div>
@@ -576,11 +585,11 @@ Venus tanitim · HTML
         </div>
       </div>
       <div class="copy">
-        <h3>Kendi kaynak kodunu bile güncelleyebiliyor</h3>
-        <p>"Kendine müzik kontrol komutu ekle" dediğinde Venüs kendi Python dosyasını okur, istediğin
+        <h3 data-i18n="smh">Kendi kaynak kodunu bile güncelleyebiliyor</h3>
+        <p data-i18n="smp1">"Kendine müzik kontrol komutu ekle" dediğinde Venüs kendi Python dosyasını okur, istediğin
         değişikliği yerel yapay zeka ile yazar, değiştirmeden önce mevcut hâlini yedekler ve
         sözdizimini doğruladıktan sonra kendini yeniden başlatır.</p>
-        <p>Bir şey ters giderse "eskiye dön" demen, son yedeğe geri dönmesi için yeterli.</p>
+        <p data-i18n="smp2">Bir şey ters giderse "eskiye dön" demen, son yedeğe geri dönmesi için yeterli.</p>
       </div>
     </div>
   </section>
@@ -588,24 +597,24 @@ Venus tanitim · HTML
   <!-- HOW IT WORKS -->
   <section id="nasil-calisir" class="container">
     <div class="section-head">
-      <h2>Bir komut, üç adımda aksiyona dönüşür</h2>
+      <h2 data-i18n="hh">Bir komut, üç adımda aksiyona dönüşür</h2>
     </div>
     <div class="steps">
       <div class="step">
         <div class="num">01</div>
-        <h4>Konuş ya da yaz</h4>
-        <p>Mikrofonu aç ya da mesaj kutusuna yaz, komutunu ilet.</p>
+        <h4 data-i18n="st1h">Konuş ya da yaz</h4>
+        <p data-i18n="st1p">Mikrofonu aç ya da mesaj kutusuna yaz, komutunu ilet.</p>
       </div>
       <div class="step">
         <div class="num">02</div>
-        <h4>Venüs niyetini çözer</h4>
-        <p>Önce kendi komut tablosunda arar; karşılığı yoksa yerel yapay zeka modeline sorar.</p>
+        <h4 data-i18n="st2h">Venüs niyetini çözer</h4>
+        <p data-i18n="st2p">Önce kendi komut tablosunda arar; karşılığı yoksa yerel yapay zeka modeline sorar.</p>
       </div>
       <div class="step">
         <div class="num">03</div>
-        <h4>Aksiyonu alır, sesli anlatır</h4>
-        <p>İlgili işlemi yapar — uygulama açar, oyun yazar, fotoğraf düzenler — ve sonucu Türkçe
-        sesle özetler.</p>
+        <h4 data-i18n="st3h">Aksiyonu alır, sesli anlatır</h4>
+        <p data-i18n="st3p">İlgili işlemi yapar — uygulama açar, oyun yazar, fotoğraf düzenler — ve sonucu
+        sesli olarak özetler.</p>
       </div>
     </div>
   </section>
@@ -614,8 +623,8 @@ Venus tanitim · HTML
   <section id="teknoloji" class="tech-strip">
     <div class="container">
       <div>
-        <h2>Beyni bilgisayarında çalışıyor</h2>
-        <p>Sohbetin, oyun yazımının ve ekran yorumlamasının beyni bilgisayarında yerel çalışan bir
+        <h2 data-i18n="th1">Beyni bilgisayarında çalışıyor</h2>
+        <p data-i18n="tp1">Sohbetin, oyun yazımının ve ekran yorumlamasının beyni bilgisayarında yerel çalışan bir
         dil modelinden (Ollama üzerinden) geliyor. Sesi yazıya çevirme ve yazıyı seslendirme
         adımlarında ise online servisler kullanılıyor.</p>
         <div class="pill-row">
@@ -627,8 +636,8 @@ Venus tanitim · HTML
         </div>
       </div>
       <div>
-        <h2>Konuşma geçmişini unutmaz</h2>
-        <p>Her soru-cevap SQLite veritabanına kaydedilir; "neler konuştuk" dediğinde son
+        <h2 data-i18n="th2">Konuşma geçmişini unutmaz</h2>
+        <p data-i18n="tp2">Her soru-cevap SQLite veritabanına kaydedilir; "neler konuştuk" dediğinde son
         konuşmalarını hatırlar. Notların ve kayıtlı uygulamaların da aynı şekilde saklanır.</p>
       </div>
     </div>
@@ -637,22 +646,22 @@ Venus tanitim · HTML
   <!-- YORUMLAR -->
   <section id="yorumlar" class="container">
     <div class="section-head">
-      <h2>Ne düşünüyorsun?</h2>
-      <p>Eksik bulduğun bir şey mi var, yoksa bir özelliğe mi bayıldın? Aşağıya yaz, doğrudan bana ulaşsın.</p>
+      <h2 data-i18n="ch">Ne düşünüyorsun?</h2>
+      <p data-i18n="cp">Eksik bulduğun bir şey mi var, yoksa bir özelliğe mi bayıldın? Aşağıya yaz, doğrudan bana ulaşsın.</p>
     </div>
     <form id="yorum-form" class="comment-form">
       <div class="form-row">
-        <input type="text" name="name" placeholder="Adın (istersen boş bırak)">
+        <input type="text" name="name" data-i18n-ph="cname_ph" placeholder="Adın (istersen boş bırak)">
         <select name="tur">
-          <option value="Öneri">Öneri</option>
-          <option value="Eksik bir şey var">Eksik bir şey var</option>
-          <option value="Çok beğendim">Çok beğendim</option>
+          <option value="Öneri" data-i18n="csel_a">Öneri</option>
+          <option value="Eksik bir şey var" data-i18n="csel_b">Eksik bir şey var</option>
+          <option value="Çok beğendim" data-i18n="csel_c">Çok beğendim</option>
         </select>
       </div>
-      <textarea name="message" placeholder="Yorumunu yaz..." required></textarea>
+      <textarea name="message" data-i18n-ph="cmsg_ph" placeholder="Yorumunu yaz..." required></textarea>
       <input type="hidden" name="access_key" value="64e49af0-7f22-4db5-9449-329f214555c3">
       <input type="hidden" name="subject" value="Venüs sitesine yeni yorum geldi">
-      <button type="submit" class="btn">Gönder</button>
+      <button type="submit" class="btn" data-i18n="cbtn">Gönder</button>
       <p id="form-status" class="form-status"></p>
     </form>
   </section>
@@ -663,11 +672,385 @@ Venus tanitim · HTML
   <div class="container">
     <div>
       <p style="color:var(--text-soft)">C.Y.B.E.R — Venüs OS v1.0</p>
-      <span class="launch-tag">Tahmini çıkış tarihi: 2027</span>
+      <span class="launch-tag" data-i18n="launch">Tahmini çıkış tarihi: 2027</span>
     </div>
   </div>
 </footer>
  
+<script>
+  const translations = {
+    tr: {
+      title:"Venüs — Masaüstünde yaşayan yapay zeka asistanı",
+      navf:"Özellikler", navh:"Nasıl çalışır", navt:"Teknoloji", navc:"Yorumlar",
+      eyebrow:"Türkçe konuşan masaüstü asistanı",
+      h1:"Bilgisayarınla konuş, gerisini o halletsin",
+      lead:"Venüs; sesini dinleyen, ekranını gören, senin için oyun yazan ve gerektiğinde kendi kaynak kodunu bile güncelleyen bir yapay zeka asistanı. Python ve Tkinter ile yazıldı, aklını bilgisayarında yerel çalışan bir dil modelinden alıyor.",
+      btn:"Neler yapabildiğini gör",
+      s1h:"Aklındaki oyunu sesle anlatman yeterli",
+      s1p1:"\"Uzay temalı bir kaçış oyunu yap\" dediğinde Venüs, yerel çalışan yapay zekasıyla sıfırdan bir HTML5 oyunu yazar, tarayıcında otomatik açar ve kodunu kopyalayabileceğin ayrı bir pencerede gösterir.",
+      s1p2:"Beğenmediğin bir şey mi var? \"Buna bir skor tablosu ekle\" ya da \"düşman hareketini hızlandır\" demen yeterli — Venüs var olan oyunu bozmadan günceller.",
+      s2h:"Kendi foto editörün, sözünü dinliyor",
+      s2p1:"Venüs'ün içine gömülü düzenleyici; parlaklığı, kontrastı ve doygunluğu canlı önizlemeyle ayarlar, siyah-beyaz veya sepya gibi filtreler uygular, kırpar ve elle çizim yapmana izin verir.",
+      s2p2:"Sohbete bir fotoğraf eklediğinde işi tamamen yapay zekaya bırakabilirsin: \"üstündeki tişörtü kırmızı yap\" demen, fotoğrafı baştan düzenlemesi için yeterli.",
+      gh:"Ve daha fazlası, tek bir sesli komutla",
+      gp:"Venüs'ün elliye yakın hazır komutu var; en çok kullanılan on tanesi burada.",
+      f1h:"Sesli ve yazılı sohbet", f1p:"Mikrofona konuş ya da yaz — Venüs ikisini de aynı anda anlar ve sesli yanıt verir.",
+      f2h:"Ekranını görüp yorumlar", f2p:"\"Ekranımı gör\" dediğinde anlık görüntü alır, sorularını o görüntüye bakarak yanıtlar.",
+      f3h:"Uygulamaları sesle açar", f3p:"Bilgisayarındaki tüm uygulamaları tek seferde tarar, adını söylediğinde açar.",
+      f4h:"Müziği ve sesi yönetir", f4p:"Şarkı değiştirmek, sesi kısmak ya da durdurmak için Venüs'e söylemen yeter.",
+      f5h:"Hava durumu ve gündem", f5p:"Herhangi bir şehrin hava durumunu okur, istersen günün öne çıkan başlıklarını özetler.",
+      f6h:"Yakındaki restoranları bulur", f6p:"Konumunu bulup çevredeki restoranları mesafeye göre sıralar, saatleriyle gösterir.",
+      f7h:"Anında çeviri yapar", f7p:"Hangi dile çevirmek istediğini söyle, Venüs çeviriyi sesli okusun.",
+      f8h:"Not tutar, hatırlatıcı kurar", f8p:"\"5 dakika sonra hatırlat\" de, notlarını da istediğin an sana geri okur.",
+      smh:"Kendi kaynak kodunu bile güncelleyebiliyor",
+      smp1:"\"Kendine müzik kontrol komutu ekle\" dediğinde Venüs kendi Python dosyasını okur, istediğin değişikliği yerel yapay zeka ile yazar, değiştirmeden önce mevcut hâlini yedekler ve sözdizimini doğruladıktan sonra kendini yeniden başlatır.",
+      smp2:"Bir şey ters giderse \"eskiye dön\" demen, son yedeğe geri dönmesi için yeterli.",
+      hh:"Bir komut, üç adımda aksiyona dönüşür",
+      st1h:"Konuş ya da yaz", st1p:"Mikrofonu aç ya da mesaj kutusuna yaz, komutunu ilet.",
+      st2h:"Venüs niyetini çözer", st2p:"Önce kendi komut tablosunda arar; karşılığı yoksa yerel yapay zeka modeline sorar.",
+      st3h:"Aksiyonu alır, sesli anlatır", st3p:"İlgili işlemi yapar — uygulama açar, oyun yazar, fotoğraf düzenler — ve sonucu sesli olarak özetler.",
+      th1:"Beyni bilgisayarında çalışıyor",
+      tp1:"Sohbetin, oyun yazımının ve ekran yorumlamasının beyni bilgisayarında yerel çalışan bir dil modelinden (Ollama üzerinden) geliyor. Sesi yazıya çevirme ve yazıyı seslendirme adımlarında ise online servisler kullanılıyor.",
+      th2:"Konuşma geçmişini unutmaz",
+      tp2:"Her soru-cevap SQLite veritabanına kaydedilir; \"neler konuştuk\" dediğinde son konuşmalarını hatırlar. Notların ve kayıtlı uygulamaların da aynı şekilde saklanır.",
+      ch:"Ne düşünüyorsun?", cp:"Eksik bulduğun bir şey mi var, yoksa bir özelliğe mi bayıldın? Aşağıya yaz, doğrudan bana ulaşsın.",
+      cname_ph:"Adın (istersen boş bırak)", csel_a:"Öneri", csel_b:"Eksik bir şey var", csel_c:"Çok beğendim",
+      cmsg_ph:"Yorumunu yaz...", cbtn:"Gönder",
+      cstatus_sending:"Gönderiliyor...", cstatus_ok:"Teşekkürler, yorumun iletildi.",
+      cstatus_fail:"Bir sorun oldu, tekrar dener misin?", cstatus_neterr:"Gönderilemedi, internet bağlantını kontrol et.",
+      launch:"Tahmini çıkış tarihi: 2027"
+    },
+    en: {
+      title:"Venüs — An AI assistant that lives on your desktop",
+      navf:"Features", navh:"How it works", navt:"Technology", navc:"Comments",
+      eyebrow:"A desktop assistant that speaks Turkish",
+      h1:"Talk to your computer, let it handle the rest",
+      lead:"Venüs is an AI assistant that listens to your voice, sees your screen, writes games for you, and can even update its own source code when asked. Built with Python and Tkinter, its brain runs on a language model locally on your computer.",
+      btn:"See what it can do",
+      s1h:"Just describe the game in your head",
+      s1p1:"Say \"make an escape game set in space\" and Venüs writes a brand-new HTML5 game with its local AI, opens it automatically in your browser, and shows the code in a separate window you can copy.",
+      s1p2:"Don't like something? Just say \"add a scoreboard\" or \"speed up the enemies\" — Venüs updates the existing game without breaking it.",
+      s2h:"Your own photo editor, listening to you",
+      s2p1:"The editor built into Venüs adjusts brightness, contrast and saturation with a live preview, applies filters like black-and-white or sepia, crops, and lets you draw by hand.",
+      s2p2:"Add a photo to the chat and you can hand the whole job to the AI: just say \"make the shirt he's wearing red\" and it edits the photo for you.",
+      gh:"And there's a lot more, all with a single voice command",
+      gp:"Venüs has close to fifty built-in commands; here are the ten most used.",
+      f1h:"Voice and text chat", f1p:"Talk into the mic or type — Venüs understands either and replies out loud.",
+      f2h:"Sees and comments on your screen", f2p:"Say \"look at my screen\" and it takes a snapshot, then answers your questions based on it.",
+      f3h:"Opens apps by voice", f3p:"It scans every app on your computer once, then opens any of them just by hearing the name.",
+      f4h:"Controls music and volume", f4p:"Just tell Venüs to skip a track, lower the volume, or stop it entirely.",
+      f5h:"Weather and news", f5p:"Reads the current weather for any city, and can summarize today's top headlines on request.",
+      f6h:"Finds nearby restaurants", f6p:"Finds your location and lists nearby restaurants by distance, with hours and address.",
+      f7h:"Instant translation", f7p:"Tell it which language to translate into, and Venüs reads the translation out loud.",
+      f8h:"Takes notes and sets reminders", f8p:"Say \"remind me in 5 minutes\" and it will; it also reads your notes back whenever you ask.",
+      smh:"It can even update its own source code",
+      smp1:"Say \"add a music control command to yourself\" and Venüs reads its own Python file, writes the requested change with the local AI, backs up the current version before touching anything, verifies the syntax, and restarts itself.",
+      smp2:"If something goes wrong, just say \"revert\" and it rolls back to the last backup.",
+      hh:"One command, three steps to action",
+      st1h:"Speak or type", st1p:"Turn on the mic or type into the message box to send your command.",
+      st2h:"Venüs figures out your intent", st2p:"It first checks its own command table; if there's no match, it asks the local AI model.",
+      st3h:"It takes action and explains", st3p:"It performs the task — opens an app, writes a game, edits a photo — and summarizes the result out loud.",
+      th1:"Its brain runs on your own computer",
+      tp1:"The brain behind chatting, writing games, and reading your screen comes from a language model running locally on your computer (via Ollama). Speech-to-text and text-to-speech, however, use online services.",
+      th2:"It never forgets a conversation",
+      tp2:"Every question and answer is saved to a SQLite database; ask \"what did we talk about\" and it recalls recent conversations. Your notes and saved apps are stored the same way.",
+      ch:"What do you think?", cp:"Found something missing, or loved a feature? Write below — it reaches me directly.",
+      cname_ph:"Your name (optional)", csel_a:"Suggestion", csel_b:"Something's missing", csel_c:"I love it",
+      cmsg_ph:"Write your comment...", cbtn:"Send",
+      cstatus_sending:"Sending...", cstatus_ok:"Thanks, your comment was delivered.",
+      cstatus_fail:"Something went wrong, want to try again?", cstatus_neterr:"Couldn't send — check your internet connection.",
+      launch:"Estimated release: 2027"
+    },
+    de: {
+      title:"Venüs — Ein KI-Assistent, der auf deinem Desktop lebt",
+      navf:"Funktionen", navh:"So funktioniert's", navt:"Technologie", navc:"Kommentare",
+      eyebrow:"Ein Desktop-Assistent, der Türkisch spricht",
+      h1:"Sprich mit deinem Computer, er erledigt den Rest",
+      lead:"Venüs ist ein KI-Assistent, der deiner Stimme zuhört, deinen Bildschirm sieht, Spiele für dich schreibt und auf Wunsch sogar seinen eigenen Quellcode aktualisiert. Gebaut mit Python und Tkinter, läuft sein Gehirn lokal auf deinem Computer.",
+      btn:"Sieh, was er kann",
+      s1h:"Beschreib einfach das Spiel, das dir vorschwebt",
+      s1p1:"Sag \"mach ein Fluchtspiel im Weltall\" und Venüs schreibt mit seiner lokalen KI ein brandneues HTML5-Spiel, öffnet es automatisch im Browser und zeigt den Code in einem separaten Fenster zum Kopieren.",
+      s1p2:"Gefällt dir etwas nicht? Sag einfach \"füge eine Bestenliste hinzu\" oder \"beschleunige die Gegner\" — Venüs aktualisiert das bestehende Spiel, ohne es zu zerstören.",
+      s2h:"Dein eigener Fotoeditor, der auf dich hört",
+      s2p1:"Der in Venüs eingebaute Editor passt Helligkeit, Kontrast und Sättigung mit Live-Vorschau an, wendet Filter wie Schwarz-Weiß oder Sepia an, schneidet zu und lässt dich von Hand zeichnen.",
+      s2p2:"Fügst du dem Chat ein Foto hinzu, kannst du die ganze Arbeit der KI überlassen: sag einfach \"mach das Shirt rot\", und sie bearbeitet das Foto für dich.",
+      gh:"Und noch viel mehr, mit nur einem Sprachbefehl",
+      gp:"Venüs hat fast fünfzig eingebaute Befehle; hier sind die zehn meistgenutzten.",
+      f1h:"Sprach- und Textchat", f1p:"Sprich ins Mikro oder tippe — Venüs versteht beides und antwortet laut.",
+      f2h:"Sieht deinen Bildschirm und kommentiert ihn", f2p:"Sag \"sieh dir meinen Bildschirm an\", ein Schnappschuss wird gemacht und deine Fragen dazu beantwortet.",
+      f3h:"Öffnet Apps per Sprache", f3p:"Scannt einmalig alle Apps auf deinem Computer und öffnet sie danach allein durch Nennen des Namens.",
+      f4h:"Steuert Musik und Lautstärke", f4p:"Sag Venüs einfach, den Titel zu wechseln, leiser zu machen oder zu stoppen.",
+      f5h:"Wetter und Nachrichten", f5p:"Liest das aktuelle Wetter für jede Stadt vor und fasst auf Wunsch die Top-Schlagzeilen des Tages zusammen.",
+      f6h:"Findet Restaurants in der Nähe", f6p:"Ermittelt deinen Standort und listet nahe Restaurants nach Entfernung, mit Adresse und Öffnungszeiten.",
+      f7h:"Sofortübersetzung", f7p:"Sag, in welche Sprache übersetzt werden soll, und Venüs liest die Übersetzung laut vor.",
+      f8h:"Macht Notizen und stellt Erinnerungen", f8p:"Sag \"erinnere mich in 5 Minuten\", und Venüs tut es; sie liest dir Notizen auch jederzeit vor.",
+      smh:"Kann sogar seinen eigenen Quellcode aktualisieren",
+      smp1:"Sag \"füge dir selbst einen Musiksteuerungsbefehl hinzu\" und Venüs liest seine eigene Python-Datei, schreibt die gewünschte Änderung mit der lokalen KI, sichert vorher den aktuellen Stand, prüft die Syntax und startet sich neu.",
+      smp2:"Geht etwas schief, sag einfach \"mach rückgängig\" und die letzte Sicherung wird wiederhergestellt.",
+      hh:"Ein Befehl, drei Schritte zur Aktion",
+      st1h:"Sprechen oder tippen", st1p:"Mikro einschalten oder in das Nachrichtenfeld tippen, um den Befehl zu senden.",
+      st2h:"Venüs erkennt deine Absicht", st2p:"Zuerst wird die eigene Befehlstabelle geprüft; ohne Treffer wird das lokale KI-Modell gefragt.",
+      st3h:"Führt die Aktion aus und erklärt sie", st3p:"Erledigt die Aufgabe — öffnet eine App, schreibt ein Spiel, bearbeitet ein Foto — und fasst das Ergebnis laut zusammen.",
+      th1:"Das Gehirn läuft auf deinem eigenen Computer",
+      tp1:"Das Gehirn hinter Chat, Spieleschreiben und Bildschirmerkennung kommt von einem lokal auf deinem Computer laufenden Sprachmodell (über Ollama). Sprache-zu-Text und Text-zu-Sprache nutzen dagegen Online-Dienste.",
+      th2:"Vergisst kein Gespräch",
+      tp2:"Jede Frage und Antwort wird in einer SQLite-Datenbank gespeichert; frag \"worüber haben wir gesprochen\" und es erinnert sich an die letzten Gespräche. Notizen und gespeicherte Apps werden genauso gespeichert.",
+      ch:"Was denkst du?", cp:"Fehlt etwas, oder liebst du ein Feature? Schreib es unten — es erreicht mich direkt.",
+      cname_ph:"Dein Name (optional)", csel_a:"Vorschlag", csel_b:"Etwas fehlt", csel_c:"Ich liebe es",
+      cmsg_ph:"Schreib deinen Kommentar...", cbtn:"Senden",
+      cstatus_sending:"Wird gesendet...", cstatus_ok:"Danke, dein Kommentar wurde übermittelt.",
+      cstatus_fail:"Etwas ist schiefgelaufen, nochmal versuchen?", cstatus_neterr:"Konnte nicht gesendet werden — prüfe deine Internetverbindung.",
+      launch:"Voraussichtlicher Start: 2027"
+    },
+    fr: {
+      title:"Venüs — Un assistant IA qui vit sur votre bureau",
+      navf:"Fonctionnalités", navh:"Comment ça marche", navt:"Technologie", navc:"Commentaires",
+      eyebrow:"Un assistant de bureau qui parle turc",
+      h1:"Parlez à votre ordinateur, laissez-le faire le reste",
+      lead:"Venüs est un assistant IA qui écoute votre voix, voit votre écran, écrit des jeux pour vous et peut même mettre à jour son propre code source sur demande. Construit avec Python et Tkinter, son cerveau tourne localement sur votre ordinateur.",
+      btn:"Découvrez ce qu'il sait faire",
+      s1h:"Décrivez simplement le jeu que vous imaginez",
+      s1p1:"Dites \"crée un jeu d'évasion dans l'espace\" et Venüs écrit un tout nouveau jeu HTML5 avec son IA locale, l'ouvre automatiquement dans votre navigateur et affiche le code dans une fenêtre à part que vous pouvez copier.",
+      s1p2:"Quelque chose ne vous plaît pas ? Dites simplement \"ajoute un tableau des scores\" ou \"accélère les ennemis\" — Venüs met à jour le jeu existant sans le casser.",
+      s2h:"Votre propre éditeur photo, à votre écoute",
+      s2p1:"L'éditeur intégré à Venüs ajuste la luminosité, le contraste et la saturation avec un aperçu en direct, applique des filtres noir et blanc ou sépia, recadre et vous laisse dessiner à la main.",
+      s2p2:"Ajoutez une photo au chat et confiez tout le travail à l'IA : dites simplement \"mets le t-shirt en rouge\" et elle modifie la photo pour vous.",
+      gh:"Et bien plus encore, avec une seule commande vocale",
+      gp:"Venüs dispose de près de cinquante commandes intégrées ; voici les dix plus utilisées.",
+      f1h:"Discussion vocale et écrite", f1p:"Parlez dans le micro ou tapez — Venüs comprend les deux et répond à voix haute.",
+      f2h:"Voit et commente votre écran", f2p:"Dites \"regarde mon écran\", une capture est prise et vos questions y sont répondues.",
+      f3h:"Ouvre les applications à la voix", f3p:"Scanne une fois toutes les applications de votre ordinateur, puis les ouvre au simple énoncé du nom.",
+      f4h:"Gère la musique et le volume", f4p:"Dites simplement à Venüs de changer de morceau, baisser le volume ou l'arrêter.",
+      f5h:"Météo et actualités", f5p:"Lit la météo actuelle de n'importe quelle ville et résume sur demande les gros titres du jour.",
+      f6h:"Trouve les restaurants à proximité", f6p:"Trouve votre position et liste les restaurants proches par distance, avec adresse et horaires.",
+      f7h:"Traduction instantanée", f7p:"Dites vers quelle langue traduire, et Venüs lit la traduction à voix haute.",
+      f8h:"Prend des notes et fixe des rappels", f8p:"Dites \"rappelle-moi dans 5 minutes\" et c'est fait ; elle relit aussi vos notes à tout moment.",
+      smh:"Il peut même mettre à jour son propre code source",
+      smp1:"Dites \"ajoute-toi une commande de contrôle musical\" et Venüs lit son propre fichier Python, écrit le changement demandé avec l'IA locale, sauvegarde la version actuelle avant tout, vérifie la syntaxe puis redémarre.",
+      smp2:"Si quelque chose tourne mal, dites simplement \"reviens en arrière\" pour restaurer la dernière sauvegarde.",
+      hh:"Une commande, trois étapes vers l'action",
+      st1h:"Parlez ou écrivez", st1p:"Activez le micro ou tapez dans la zone de message pour envoyer votre commande.",
+      st2h:"Venüs comprend votre intention", st2p:"Il vérifie d'abord sa propre table de commandes ; sans correspondance, il interroge le modèle IA local.",
+      st3h:"Il agit et explique", st3p:"Il exécute la tâche — ouvre une appli, écrit un jeu, modifie une photo — et résume le résultat à voix haute.",
+      th1:"Son cerveau tourne sur votre propre ordinateur",
+      tp1:"Le cerveau derrière la discussion, l'écriture de jeux et la lecture d'écran vient d'un modèle de langage tournant localement sur votre ordinateur (via Ollama). La reconnaissance et la synthèse vocale utilisent en revanche des services en ligne.",
+      th2:"N'oublie jamais une conversation",
+      tp2:"Chaque question et réponse est enregistrée dans une base SQLite ; demandez \"de quoi avons-nous parlé\" et il se souvient des conversations récentes. Vos notes et applications enregistrées sont stockées de la même façon.",
+      ch:"Qu'en penses-tu ?", cp:"Tu trouves qu'il manque quelque chose, ou tu adores une fonctionnalité ? Écris ci-dessous — ça m'arrive directement.",
+      cname_ph:"Ton nom (facultatif)", csel_a:"Suggestion", csel_b:"Il manque quelque chose", csel_c:"J'adore",
+      cmsg_ph:"Écris ton commentaire...", cbtn:"Envoyer",
+      cstatus_sending:"Envoi en cours...", cstatus_ok:"Merci, ton commentaire a été transmis.",
+      cstatus_fail:"Un problème est survenu, réessayer ?", cstatus_neterr:"Envoi impossible — vérifie ta connexion internet.",
+      launch:"Sortie estimée : 2027"
+    },
+    es: {
+      title:"Venüs — Un asistente de IA que vive en tu escritorio",
+      navf:"Funciones", navh:"Cómo funciona", navt:"Tecnología", navc:"Comentarios",
+      eyebrow:"Un asistente de escritorio que habla turco",
+      h1:"Habla con tu computadora, deja que ella haga el resto",
+      lead:"Venüs es un asistente de IA que escucha tu voz, ve tu pantalla, escribe juegos para ti e incluso puede actualizar su propio código fuente cuando se lo pides. Hecho con Python y Tkinter, su cerebro corre de forma local en tu computadora.",
+      btn:"Mira todo lo que puede hacer",
+      s1h:"Solo describe el juego que tienes en mente",
+      s1p1:"Di \"haz un juego de escape en el espacio\" y Venüs escribe un juego HTML5 desde cero con su IA local, lo abre automáticamente en el navegador y muestra el código en una ventana aparte que puedes copiar.",
+      s1p2:"¿Algo no te gusta? Solo di \"agrégale un marcador\" o \"acelera a los enemigos\" — Venüs actualiza el juego existente sin romperlo.",
+      s2h:"Tu propio editor de fotos, atento a lo que dices",
+      s2p1:"El editor integrado en Venüs ajusta brillo, contraste y saturación con vista previa en vivo, aplica filtros como blanco y negro o sepia, recorta y te deja dibujar a mano.",
+      s2p2:"Añade una foto al chat y deja todo el trabajo a la IA: solo di \"pon la camiseta en rojo\" y edita la foto por ti.",
+      gh:"Y mucho más, con un solo comando de voz",
+      gp:"Venüs tiene casi cincuenta comandos integrados; aquí están los diez más usados.",
+      f1h:"Chat por voz y texto", f1p:"Habla al micrófono o escribe — Venüs entiende ambos y responde en voz alta.",
+      f2h:"Ve tu pantalla y la comenta", f2p:"Di \"mira mi pantalla\" y toma una captura, luego responde tus preguntas basándose en ella.",
+      f3h:"Abre aplicaciones por voz", f3p:"Escanea una vez todas las apps de tu computadora y luego las abre con solo decir el nombre.",
+      f4h:"Controla la música y el volumen", f4p:"Solo dile a Venüs que cambie de canción, baje el volumen o lo detenga.",
+      f5h:"Clima y noticias", f5p:"Lee el clima actual de cualquier ciudad y, si lo pides, resume los titulares del día.",
+      f6h:"Encuentra restaurantes cercanos", f6p:"Localiza tu ubicación y lista restaurantes cercanos por distancia, con dirección y horarios.",
+      f7h:"Traducción instantánea", f7p:"Dile a qué idioma traducir, y Venüs lee la traducción en voz alta.",
+      f8h:"Toma notas y pone recordatorios", f8p:"Di \"recuérdame en 5 minutos\" y lo hará; también te lee tus notas cuando quieras.",
+      smh:"Incluso puede actualizar su propio código fuente",
+      smp1:"Di \"agrégate un comando para controlar la música\" y Venüs lee su propio archivo de Python, escribe el cambio pedido con la IA local, respalda la versión actual antes de tocar nada, valida la sintaxis y se reinicia.",
+      smp2:"Si algo sale mal, solo di \"vuelve atrás\" y regresa al último respaldo.",
+      hh:"Un comando, tres pasos hacia la acción",
+      st1h:"Habla o escribe", st1p:"Activa el micrófono o escribe en el cuadro de mensaje para enviar tu comando.",
+      st2h:"Venüs entiende tu intención", st2p:"Primero revisa su propia tabla de comandos; si no encuentra nada, consulta al modelo de IA local.",
+      st3h:"Actúa y lo explica", st3p:"Realiza la tarea — abre una app, escribe un juego, edita una foto — y resume el resultado en voz alta.",
+      th1:"Su cerebro corre en tu propia computadora",
+      tp1:"El cerebro detrás del chat, la creación de juegos y la lectura de pantalla viene de un modelo de lenguaje que corre localmente en tu computadora (vía Ollama). El reconocimiento y la síntesis de voz, en cambio, usan servicios en línea.",
+      th2:"Nunca olvida una conversación",
+      tp2:"Cada pregunta y respuesta se guarda en una base de datos SQLite; pregunta \"de qué hablamos\" y recordará las conversaciones recientes. Tus notas y apps guardadas se almacenan de la misma forma.",
+      ch:"¿Qué piensas?", cp:"¿Encontraste algo que falta, o te encantó alguna función? Escribe abajo — me llega directamente.",
+      cname_ph:"Tu nombre (opcional)", csel_a:"Sugerencia", csel_b:"Falta algo", csel_c:"Me encanta",
+      cmsg_ph:"Escribe tu comentario...", cbtn:"Enviar",
+      cstatus_sending:"Enviando...", cstatus_ok:"Gracias, tu comentario fue enviado.",
+      cstatus_fail:"Algo salió mal, ¿lo intentamos de nuevo?", cstatus_neterr:"No se pudo enviar — revisa tu conexión a internet.",
+      launch:"Lanzamiento estimado: 2027"
+    },
+    pt: {
+      title:"Venüs — Um assistente de IA que vive no seu desktop",
+      navf:"Recursos", navh:"Como funciona", navt:"Tecnologia", navc:"Comentários",
+      eyebrow:"Um assistente de desktop que fala turco",
+      h1:"Fale com o seu computador, deixe que ele resolva o resto",
+      lead:"Venüs é um assistente de IA que ouve sua voz, vê sua tela, escreve jogos para você e pode até atualizar o próprio código-fonte quando solicitado. Feito com Python e Tkinter, seu cérebro roda localmente no seu computador.",
+      btn:"Veja o que ele faz",
+      s1h:"Basta descrever o jogo que você imagina",
+      s1p1:"Diga \"faça um jogo de fuga no espaço\" e Venüs escreve um jogo HTML5 do zero com sua IA local, abre automaticamente no navegador e mostra o código em uma janela separada para copiar.",
+      s1p2:"Não gostou de algo? Basta dizer \"adicione um placar\" ou \"acelere os inimigos\" — Venüs atualiza o jogo existente sem quebrá-lo.",
+      s2h:"Seu próprio editor de fotos, ouvindo você",
+      s2p1:"O editor embutido no Venüs ajusta brilho, contraste e saturação com pré-visualização ao vivo, aplica filtros como preto e branco ou sépia, corta e permite desenhar à mão.",
+      s2p2:"Adicione uma foto ao chat e deixe todo o trabalho para a IA: basta dizer \"deixe a camisa vermelha\" e ela edita a foto para você.",
+      gh:"E muito mais, com um único comando de voz",
+      gp:"Venüs tem quase cinquenta comandos prontos; aqui estão os dez mais usados.",
+      f1h:"Chat por voz e texto", f1p:"Fale no microfone ou digite — Venüs entende os dois e responde em voz alta.",
+      f2h:"Vê e comenta sua tela", f2p:"Diga \"veja minha tela\" e uma captura é feita, respondendo suas perguntas com base nela.",
+      f3h:"Abre aplicativos por voz", f3p:"Escaneia uma vez todos os apps do seu computador e depois os abre só de ouvir o nome.",
+      f4h:"Controla música e volume", f4p:"Basta pedir ao Venüs para trocar a faixa, abaixar o volume ou pará-lo.",
+      f5h:"Clima e notícias", f5p:"Lê o clima atual de qualquer cidade e resume as manchetes do dia, se você pedir.",
+      f6h:"Encontra restaurantes próximos", f6p:"Localiza você e lista restaurantes próximos por distância, com endereço e horários.",
+      f7h:"Tradução instantânea", f7p:"Diga para qual idioma traduzir, e Venüs lê a tradução em voz alta.",
+      f8h:"Faz anotações e define lembretes", f8p:"Diga \"me lembre em 5 minutos\" e ele fará; também lê suas notas quando quiser.",
+      smh:"Ele pode até atualizar o próprio código-fonte",
+      smp1:"Diga \"adicione um comando de controle de música a você mesmo\" e Venüs lê seu próprio arquivo Python, escreve a mudança pedida com a IA local, faz backup da versão atual antes de tudo, verifica a sintaxe e reinicia.",
+      smp2:"Se algo der errado, basta dizer \"reverter\" para voltar ao último backup.",
+      hh:"Um comando, três passos até a ação",
+      st1h:"Fale ou digite", st1p:"Ative o microfone ou digite na caixa de mensagem para enviar seu comando.",
+      st2h:"Venüs entende sua intenção", st2p:"Primeiro verifica sua própria tabela de comandos; sem correspondência, consulta o modelo de IA local.",
+      st3h:"Age e explica", st3p:"Executa a tarefa — abre um app, escreve um jogo, edita uma foto — e resume o resultado em voz alta.",
+      th1:"Seu cérebro roda no seu próprio computador",
+      tp1:"O cérebro por trás do chat, da escrita de jogos e da leitura de tela vem de um modelo de linguagem rodando localmente no seu computador (via Ollama). Já o reconhecimento e a síntese de voz usam serviços online.",
+      th2:"Nunca esquece uma conversa",
+      tp2:"Cada pergunta e resposta é salva num banco SQLite; pergunte \"sobre o que conversamos\" e ele lembra das conversas recentes. Suas notas e apps salvos são guardados da mesma forma.",
+      ch:"O que você acha?", cp:"Achou que falta algo, ou amou algum recurso? Escreva abaixo — chega direto até mim.",
+      cname_ph:"Seu nome (opcional)", csel_a:"Sugestão", csel_b:"Falta algo", csel_c:"Eu amei",
+      cmsg_ph:"Escreva seu comentário...", cbtn:"Enviar",
+      cstatus_sending:"Enviando...", cstatus_ok:"Obrigado, seu comentário foi enviado.",
+      cstatus_fail:"Algo deu errado, tentar de novo?", cstatus_neterr:"Não foi possível enviar — verifique sua conexão com a internet.",
+      launch:"Lançamento estimado: 2027"
+    },
+    ru: {
+      title:"Venüs — ИИ-ассистент, который живёт на твоём компьютере",
+      navf:"Возможности", navh:"Как это работает", navt:"Технологии", navc:"Комментарии",
+      eyebrow:"Настольный ассистент, говорящий по-турецки",
+      h1:"Поговори со своим компьютером — остальное сделает он",
+      lead:"Venüs — это ИИ-ассистент, который слушает твой голос, видит экран, пишет игры и может даже обновлять собственный исходный код по просьбе. Написан на Python и Tkinter, а его «мозг» работает локально на твоём компьютере.",
+      btn:"Посмотреть, что он умеет",
+      s1h:"Просто опиши игру, которую представляешь",
+      s1p1:"Скажи «сделай игру-побег в космосе», и Venüs с помощью своего локального ИИ напишет с нуля новую HTML5-игру, автоматически откроет её в браузере и покажет код в отдельном окне для копирования.",
+      s1p2:"Что-то не нравится? Просто скажи «добавь таблицу рекордов» или «ускорь врагов» — Venüs обновит существующую игру, не сломав её.",
+      s2h:"Твой собственный фоторедактор, который тебя слушает",
+      s2p1:"Встроенный в Venüs редактор настраивает яркость, контраст и насыщенность с живым просмотром, применяет фильтры вроде чёрно-белого или сепии, обрезает и позволяет рисовать вручную.",
+      s2p2:"Добавь фото в чат — и всю работу можно доверить ИИ: просто скажи «сделай футболку красной», и он отредактирует фото за тебя.",
+      gh:"И это ещё не всё — одна голосовая команда решает многое",
+      gp:"У Venüs почти пятьдесят встроенных команд; вот десять самых используемых.",
+      f1h:"Голосовой и текстовый чат", f1p:"Говори в микрофон или печатай — Venüs понимает и то, и другое и отвечает вслух.",
+      f2h:"Видит экран и комментирует его", f2p:"Скажи «посмотри на мой экран» — будет сделан снимок, и вопросы будут отвечены на его основе.",
+      f3h:"Открывает приложения голосом", f3p:"Один раз сканирует все приложения на компьютере, а затем открывает их по одному названию.",
+      f4h:"Управляет музыкой и громкостью", f4p:"Просто попроси Venüs переключить трек, убавить громкость или остановить её.",
+      f5h:"Погода и новости", f5p:"Читает текущую погоду для любого города и по запросу пересказывает главные заголовки дня.",
+      f6h:"Находит рестораны поблизости", f6p:"Определяет местоположение и сортирует ближайшие рестораны по расстоянию, с адресом и часами работы.",
+      f7h:"Мгновенный перевод", f7p:"Скажи, на какой язык перевести, и Venüs прочитает перевод вслух.",
+      f8h:"Ведёт заметки и ставит напоминания", f8p:"Скажи «напомни через 5 минут» — и он напомнит; заметки тоже можно попросить прочитать в любой момент.",
+      smh:"Он может даже обновлять собственный исходный код",
+      smp1:"Скажи «добавь себе команду управления музыкой», и Venüs прочитает свой файл на Python, напишет нужное изменение с помощью локального ИИ, сделает резервную копию текущей версии, проверит синтаксис и перезапустится.",
+      smp2:"Если что-то пойдёт не так, просто скажи «откати назад» — и он вернётся к последней резервной копии.",
+      hh:"Одна команда — три шага до действия",
+      st1h:"Скажи или напиши", st1p:"Включи микрофон или напечатай в поле сообщения, чтобы отправить команду.",
+      st2h:"Venüs понимает твоё намерение", st2p:"Сначала проверяется собственная таблица команд; если совпадения нет — запрос идёт к локальной ИИ-модели.",
+      st3h:"Выполняет и объясняет", st3p:"Выполняет задачу — открывает приложение, пишет игру, редактирует фото — и озвучивает результат.",
+      th1:"Его мозг работает на твоём компьютере",
+      tp1:"Мозг, стоящий за чатом, написанием игр и распознаванием экрана, — это языковая модель, работающая локально на твоём компьютере (через Ollama). А вот распознавание и синтез речи используют онлайн-сервисы.",
+      th2:"Никогда не забывает разговор",
+      tp2:"Каждый вопрос и ответ сохраняются в базе данных SQLite; спроси «о чём мы говорили» — и он вспомнит недавние разговоры. Заметки и сохранённые приложения хранятся так же.",
+      ch:"Что думаешь?", cp:"Нашёл, чего не хватает, или влюбился в какую-то функцию? Напиши ниже — сообщение придёт прямо мне.",
+      cname_ph:"Твоё имя (необязательно)", csel_a:"Предложение", csel_b:"Чего-то не хватает", csel_c:"Мне очень нравится",
+      cmsg_ph:"Напиши комментарий...", cbtn:"Отправить",
+      cstatus_sending:"Отправка...", cstatus_ok:"Спасибо, твой комментарий доставлен.",
+      cstatus_fail:"Что-то пошло не так, попробовать ещё раз?", cstatus_neterr:"Не удалось отправить — проверь подключение к интернету.",
+      launch:"Ожидаемый релиз: 2027"
+    },
+    ar: {
+      title:"فينوس — مساعد ذكاء اصطناعي يعيش على جهازك",
+      navf:"المزايا", navh:"كيف يعمل", navt:"التقنية", navc:"التعليقات",
+      eyebrow:"مساعد لسطح المكتب يتحدث التركية",
+      h1:"تحدّث إلى جهازك، ودعه يتولى الباقي",
+      lead:"فينوس مساعد ذكاء اصطناعي يستمع إلى صوتك، يرى شاشتك، يكتب لك ألعابًا، بل ويمكنه تحديث كوده المصدري بنفسه عند الطلب. مبني بلغة Python وTkinter، ويعمل عقله محليًا على جهازك.",
+      btn:"شاهد ما يمكنه فعله",
+      s1h:"فقط صف اللعبة التي تتخيلها",
+      s1p1:"قل \"اصنع لعبة هروب في الفضاء\" وسيكتب فينوس بذكائه المحلي لعبة HTML5 جديدة تمامًا، يفتحها تلقائيًا في المتصفح، ويعرض الكود في نافذة منفصلة يمكنك نسخها.",
+      s1p2:"لا يعجبك شيء؟ فقط قل \"أضف لوحة نقاط\" أو \"سرّع الأعداء\" — يقوم فينوس بتحديث اللعبة الحالية دون كسرها.",
+      s2h:"محرر صورك الخاص، ينصت إليك",
+      s2p1:"المحرر المدمج في فينوس يضبط السطوع والتباين والتشبع بمعاينة مباشرة، يطبّق فلاتر مثل الأبيض والأسود أو السيبيا، يقصّ الصورة، ويتيح لك الرسم يدويًا.",
+      s2p2:"أضف صورة إلى المحادثة ويمكنك ترك المهمة كلها للذكاء الاصطناعي: فقط قل \"اجعل القميص أحمر\" وسيعدّل الصورة نيابة عنك.",
+      gh:"وأكثر من ذلك بكثير، بأمر صوتي واحد",
+      gp:"يمتلك فينوس ما يقارب خمسين أمرًا جاهزًا؛ وهذه أكثر عشرة استخدامًا.",
+      f1h:"محادثة صوتية ونصية", f1p:"تحدّث في الميكروفون أو اكتب — يفهم فينوس كليهما ويرد بصوت مسموع.",
+      f2h:"يرى شاشتك ويعلّق عليها", f2p:"قل \"انظر إلى شاشتي\" فيلتقط لقطة ويجيب على أسئلتك بناءً عليها.",
+      f3h:"يفتح التطبيقات بالصوت", f3p:"يفحص جميع تطبيقات جهازك مرة واحدة، ثم يفتح أيًا منها بمجرد ذكر اسمه.",
+      f4h:"يتحكم بالموسيقى ومستوى الصوت", f4p:"فقط اطلب من فينوس تغيير المقطوعة أو خفض الصوت أو إيقافه.",
+      f5h:"الطقس والأخبار", f5p:"يقرأ حالة الطقس الحالية لأي مدينة، ويلخّص أهم عناوين اليوم عند الطلب.",
+      f6h:"يجد المطاعم القريبة", f6p:"يحدّد موقعك ويرتّب المطاعم القريبة حسب المسافة، مع العنوان وساعات العمل.",
+      f7h:"ترجمة فورية", f7p:"أخبره إلى أي لغة تريد الترجمة، وسيقرأ فينوس الترجمة بصوت مسموع.",
+      f8h:"يدوّن الملاحظات ويضبط التذكيرات", f8p:"قل \"ذكّرني بعد 5 دقائق\" وسيفعل؛ ويمكنه أيضًا قراءة ملاحظاتك لك في أي وقت.",
+      smh:"يمكنه حتى تحديث كوده المصدري بنفسه",
+      smp1:"قل \"أضف لنفسك أمر تحكم بالموسيقى\" وسيقرأ فينوس ملفه الخاص بلغة Python، يكتب التعديل المطلوب باستخدام الذكاء الاصطناعي المحلي، يأخذ نسخة احتياطية من النسخة الحالية أولًا، يتحقق من صحة الكود، ثم يعيد تشغيل نفسه.",
+      smp2:"إذا حدث خطأ ما، فقط قل \"ارجع للنسخة السابقة\" ليعود إلى آخر نسخة احتياطية.",
+      hh:"أمر واحد، وثلاث خطوات نحو التنفيذ",
+      st1h:"تحدّث أو اكتب", st1p:"شغّل الميكروفون أو اكتب في صندوق الرسائل لإرسال أمرك.",
+      st2h:"يفهم فينوس قصدك", st2p:"يتحقق أولًا من جدول أوامره الخاص؛ فإن لم يجد تطابقًا، يسأل نموذج الذكاء الاصطناعي المحلي.",
+      st3h:"ينفّذ ويشرح", st3p:"يقوم بالمهمة — يفتح تطبيقًا، يكتب لعبة، يعدّل صورة — ثم يلخّص النتيجة بصوت مسموع.",
+      th1:"عقله يعمل على جهازك أنت",
+      tp1:"العقل وراء المحادثة وكتابة الألعاب وقراءة الشاشة يأتي من نموذج لغوي يعمل محليًا على جهازك (عبر Ollama). أما التعرف على الصوت وتحويل النص إلى كلام فيستخدمان خدمات عبر الإنترنت.",
+      th2:"لا ينسى أي محادثة",
+      tp2:"يتم حفظ كل سؤال وجواب في قاعدة بيانات SQLite؛ اسأله \"عمّ تحدثنا\" وسيتذكر المحادثات الأخيرة. تُحفظ ملاحظاتك وتطبيقاتك المسجّلة بنفس الطريقة.",
+      ch:"ما رأيك؟", cp:"وجدت شيئًا ناقصًا، أم أعجبتك إحدى الميزات؟ اكتب أدناه — تصلني الرسالة مباشرة.",
+      cname_ph:"اسمك (اختياري)", csel_a:"اقتراح", csel_b:"هناك شيء ناقص", csel_c:"أحببته كثيرًا",
+      cmsg_ph:"اكتب تعليقك...", cbtn:"إرسال",
+      cstatus_sending:"جارٍ الإرسال...", cstatus_ok:"شكرًا، تم إرسال تعليقك.",
+      cstatus_fail:"حدث خطأ ما، هل تريد المحاولة مرة أخرى؟", cstatus_neterr:"تعذّر الإرسال — تحقق من اتصالك بالإنترنت.",
+      launch:"الإصدار المتوقع: 2027"
+    }
+  };
+ 
+  const langNames = {tr:"Türkçe", en:"English", de:"Deutsch", fr:"Français", es:"Español", pt:"Português", ru:"Русский", ar:"العربية"};
+  const langSelect = document.getElementById('lang-select');
+  Object.keys(translations).forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code; opt.textContent = langNames[code];
+    langSelect.appendChild(opt);
+  });
+ 
+  let currentLang = 'tr';
+  function applyLanguage(lang){
+    const dict = translations[lang] ? lang : 'tr';
+    currentLang = dict;
+    const t = translations[dict];
+    document.documentElement.lang = dict;
+    document.documentElement.dir = (dict === 'ar') ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if(t[key] !== undefined) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if(t[key] !== undefined) el.setAttribute('placeholder', t[key]);
+    });
+    if(t.title) document.title = t.title;
+    langSelect.value = dict;
+  }
+ 
+  function detectLang(){
+    const saved = localStorage.getItem('venus_lang');
+    if(saved && translations[saved]) return saved;
+    const nav = (navigator.language || navigator.userLanguage || 'tr').toLowerCase();
+    const primary = nav.split('-')[0];
+    if(translations[primary]) return primary;
+    return translations.en ? 'en' : 'tr';
+  }
+ 
+  applyLanguage(detectLang());
+  langSelect.addEventListener('change', e => {
+    applyLanguage(e.target.value);
+    localStorage.setItem('venus_lang', e.target.value);
+  });
+</script>
 <script>
   const states = [
     {label:'Bekliyor', color:'#2f86ff'},
@@ -701,7 +1084,8 @@ Venus tanitim · HTML
   const formStatus = document.getElementById('form-status');
   yorumForm.addEventListener('submit', async function(e){
     e.preventDefault();
-    formStatus.textContent = 'Gönderiliyor...';
+    const t = translations[currentLang] || translations.tr;
+    formStatus.textContent = t.cstatus_sending;
     formStatus.style.color = 'var(--text-soft)';
     const formData = new FormData(yorumForm);
     try{
@@ -712,15 +1096,15 @@ Venus tanitim · HTML
       });
       const data = await res.json();
       if(data.success){
-        formStatus.textContent = 'Teşekkürler, yorumun iletildi.';
+        formStatus.textContent = t.cstatus_ok;
         formStatus.style.color = 'var(--green)';
         yorumForm.reset();
       } else {
-        formStatus.textContent = 'Bir sorun oldu, tekrar dener misin?';
+        formStatus.textContent = t.cstatus_fail;
         formStatus.style.color = 'var(--red)';
       }
     }catch(err){
-      formStatus.textContent = 'Gönderilemedi, internet bağlantını kontrol et.';
+      formStatus.textContent = t.cstatus_neterr;
       formStatus.style.color = 'var(--red)';
     }
   });
@@ -735,6 +1119,3 @@ Venus tanitim · HTML
  
 </body>
 </html>
- 
-
-
