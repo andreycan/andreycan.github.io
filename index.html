@@ -1,3 +1,6 @@
+
+
+Venus tanitim · HTML
 <!doctype html>
 <html lang="tr">
 <head>
@@ -48,7 +51,7 @@
   .container{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
   section{padding:96px 0;}
   @media (max-width:720px){ section{padding:64px 0;} }
-
+ 
   /* corner-bracket HUD frame, matches the app's own on-screen HUD corners */
   .hud-frame{
     position:relative;
@@ -65,7 +68,7 @@
       bottom 12px left 12px, bottom 12px left 12px,
       bottom 12px right 12px, bottom 12px right 12px;
   }
-
+ 
   /* ---------- topbar ---------- */
   .topbar{
     position:sticky; top:0; z-index:20;
@@ -81,11 +84,26 @@
     color:var(--cyan); display:flex; align-items:center; gap:10px;
   }
   .logo .dot{width:9px; height:9px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
-  .topbar nav{display:flex; gap:28px; font-size:.85rem; color:var(--text-soft);}
-  .topbar nav a{color:var(--text-soft); text-decoration:none;}
-  .topbar nav a:hover{color:var(--cyan);}
-  @media (max-width:640px){ .topbar nav{display:none;} }
-
+  .topbar .nav-desktop{display:flex; gap:28px; font-size:.85rem; color:var(--text-soft);}
+  .topbar .nav-desktop a{color:var(--text-soft); text-decoration:none;}
+  .topbar .nav-desktop a:hover{color:var(--cyan);}
+ 
+  .menu-btn{display:none; flex-direction:column; justify-content:center; gap:5px;
+    width:36px; height:36px; background:none; border:none; cursor:pointer; padding:0;}
+  .menu-btn span{display:block; width:100%; height:2px; background:var(--cyan); border-radius:2px;}
+  .nav-mobile{display:none; flex-direction:column; position:sticky; top:0; z-index:19;
+    background:rgba(10,15,26,.98); border-bottom:1px solid rgba(0,179,179,.25);}
+  .nav-mobile a{color:var(--text-soft); text-decoration:none; padding:16px 24px; font-size:.95rem;
+    border-top:1px solid rgba(127,168,184,.1);}
+  .nav-mobile a:active{color:var(--cyan);}
+  .nav-mobile.open{display:flex;}
+ 
+  @media (max-width:640px){
+    .topbar .nav-desktop{display:none;}
+    .menu-btn{display:flex;}
+    .editor-mock{grid-template-columns:1fr;}
+  }
+ 
   /* ---------- hero ---------- */
   .hero{
     padding-top:64px;
@@ -95,6 +113,12 @@
     background-position:center 40px;
   }
   @media (max-width:900px){ .hero{grid-template-columns:1fr; text-align:left;} }
+  @media (max-width:520px){
+    .hud-hero{max-width:88vw;}
+    .btn{width:100%; text-align:center;}
+    section{padding:56px 0;}
+    .hero{padding-top:36px;}
+  }
   .eyebrow-tag{
     display:inline-flex; align-items:center; gap:8px;
     font-size:.72rem; color:var(--cyan-dark);
@@ -111,7 +135,7 @@
     border:none; cursor:pointer; font-size:.95rem;
   }
   .btn:hover{background:#5cffff;}
-
+ 
   /* hero hud mockup */
   .hud-hero{
     position:relative; aspect-ratio:1/1; max-width:420px; margin:0 auto;
@@ -139,11 +163,11 @@
     font-size:.78rem;}
   .hud-status .dot{width:10px; height:10px; border-radius:50%; background:var(--state-color); transition:background 1s;}
   .hud-status .label{color:var(--state-color); transition:color 1s;}
-
+ 
   /* ---------- section heads ---------- */
   .section-head{max-width:640px; margin-bottom:48px;}
   .section-head h2{font-size:clamp(1.6rem,3vw,2.2rem);}
-
+ 
   /* ---------- spotlight (large feature) ---------- */
   .spotlight{
     display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;
@@ -156,7 +180,7 @@
   }
   .spotlight h3{font-size:clamp(1.4rem,2.6vw,1.9rem); max-width:16ch;}
   .visual{background:var(--panel); border-radius:12px; padding:22px;}
-
+ 
   /* browser window mockup (game) */
   .browser-mock{border-radius:8px; overflow:hidden; background:#050810; border:1px solid rgba(0,179,179,.25);}
   .browser-bar{display:flex; align-items:center; gap:8px; padding:9px 12px; background:var(--panel-2);}
@@ -178,7 +202,7 @@
     filter:drop-shadow(0 0 6px var(--cyan));}
   .score-hud{position:absolute; top:10px; left:12px; font-size:.66rem; color:var(--green);}
   .lives-hud{position:absolute; top:10px; right:12px; font-size:.7rem; color:var(--red);}
-
+ 
   /* photo editor mockup */
   .editor-mock{display:grid; grid-template-columns:120px 1fr; gap:14px; background:#050810;
     border:1px solid rgba(0,179,179,.25); border-radius:8px; padding:14px;}
@@ -194,7 +218,7 @@
   .editor-canvas svg{width:100%; height:100%;}
   .brush-badge{position:absolute; bottom:8px; right:8px; background:var(--red); color:#fff;
     font-size:.58rem; padding:3px 8px; border-radius:4px;}
-
+ 
   /* ---------- small feature grid ---------- */
   .feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
   @media (max-width:920px){ .feature-grid{grid-template-columns:repeat(2,1fr);} }
@@ -204,13 +228,13 @@
     position:relative; overflow:hidden;}
   .feature-card h4{font-family:'Space Grotesk', sans-serif; font-size:.95rem; margin:0 0 6px; color:var(--text);}
   .feature-card p{font-size:.82rem; margin:0;}
-
+ 
   /* chat bubble mock */
   .mock-chat{padding:10px; font-size:.55rem; display:flex; flex-direction:column; gap:6px;}
   .bubble{padding:5px 9px; border-radius:5px; max-width:78%;}
   .bubble.sen{align-self:flex-end; background:#0f2734; color:var(--cyan);}
   .bubble.venus{align-self:flex-start; background:#131d2e; color:var(--text);}
-
+ 
   /* screen-vision mock */
   .mock-screen{display:flex; align-items:center; justify-content:center;}
   .monitor{width:70%; height:56px; border:2px solid var(--cyan-dark); border-radius:4px; position:relative;
@@ -220,25 +244,25 @@
   @keyframes scan{0%{top:6%;} 100%{top:92%;}}
   .monitor .eye{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:1.1rem;}
-
+ 
   /* app launcher mock */
   .mock-apps{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:14px;}
   .app-icon{aspect-ratio:1; border-radius:6px; background:var(--panel-2);}
   .app-icon.active{background:var(--cyan); box-shadow:0 0 10px var(--cyan);}
-
+ 
   /* media player mock */
   .mock-media{display:flex; align-items:center; gap:10px; padding:20px 16px;}
   .play-btn{width:26px; height:26px; border-radius:50%; background:var(--cyan); flex-shrink:0;
     display:flex; align-items:center; justify-content:center; font-size:.6rem; color:#00141a;}
   .media-bar{flex:1; height:4px; background:#152036; border-radius:3px; overflow:hidden;}
   .media-bar span{display:block; width:38%; height:100%; background:var(--cyan-dark);}
-
+ 
   /* weather mock */
   .mock-weather{display:flex; align-items:center; gap:12px; padding:18px;}
   .sun{width:34px; height:34px; border-radius:50%; background:var(--yellow); box-shadow:0 0 14px var(--yellow);}
   .weather-temp{font-family:'Space Grotesk',sans-serif; font-size:1.3rem; color:var(--text);}
   .weather-city{font-size:.62rem; color:var(--text-soft);}
-
+ 
   /* map mock */
   .mock-map{position:relative; background:
     linear-gradient(rgba(127,168,184,.08) 1px, transparent 1px) 0 0/16px 16px,
@@ -247,20 +271,20 @@
   .pin{position:absolute; width:8px; height:8px; border-radius:50% 50% 50% 0; background:var(--red);
     transform:rotate(45deg);}
   .radius-ring{position:absolute; border:1px dashed var(--cyan-dark); border-radius:50%; opacity:.5;}
-
+ 
   /* translate mock */
   .mock-translate{display:flex; flex-direction:column; gap:8px; padding:14px; font-size:.62rem;}
   .lang-bubble{padding:6px 10px; border-radius:5px; display:flex; justify-content:space-between;}
   .lang-bubble.from{background:#0f2734; color:var(--cyan);}
   .lang-bubble.to{background:#131d2e; color:var(--text);}
-
+ 
   /* note/timer mock */
   .mock-note{display:flex; gap:10px; padding:14px; align-items:flex-start;}
   .sticky{background:#2a2210; border-left:3px solid var(--yellow); color:#e8dcae; font-size:.58rem;
     padding:8px; border-radius:2px; flex:1;}
   .timer-badge{background:var(--panel-2); color:var(--purple); font-size:.6rem; padding:6px 8px;
     border-radius:5px; white-space:nowrap;}
-
+ 
   /* ---------- self-mod spotlight ---------- */
   .code-mock{background:#050810; border:1px solid rgba(0,179,179,.25); border-radius:8px; overflow:hidden;}
   .code-bar{display:flex; justify-content:space-between; align-items:center; padding:9px 14px;
@@ -270,14 +294,14 @@
   .code-lines .add{color:var(--green);}
   .code-lines .rem{color:var(--red); opacity:.7; text-decoration:line-through;}
   .code-lines .plain{color:var(--text-soft);}
-
+ 
   /* ---------- how it works ---------- */
   .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:32px; counter-reset:step;}
   @media (max-width:800px){ .steps{grid-template-columns:1fr;} }
   .step{border-top:2px solid var(--cyan-dark); padding-top:16px;}
   .step .num{font-family:'Space Grotesk',sans-serif; color:var(--cyan); font-size:1.6rem; font-weight:700;}
   .step h4{font-family:'Space Grotesk',sans-serif; margin:8px 0 6px; font-size:1.05rem;}
-
+ 
   /* ---------- tech strip ---------- */
   .tech-strip{background:var(--panel);}
   .tech-strip .container{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;}
@@ -285,7 +309,7 @@
   .pill-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
   .pill{border:1px solid rgba(0,179,179,.35); color:var(--cyan-dark); font-size:.72rem;
     padding:6px 12px; border-radius:100px;}
-
+ 
   /* ---------- comments ---------- */
   .comment-form{max-width:640px; display:flex; flex-direction:column; gap:14px;}
   .form-row{display:flex; gap:12px; flex-wrap:wrap;}
@@ -303,26 +327,35 @@
   .form-status{font-size:.8rem; margin:8px 0 0;}
   .launch-tag{display:inline-flex; align-items:center; gap:8px; font-size:.72rem; color:var(--purple);
     border:1px solid rgba(181,101,245,.4); border-radius:100px; padding:5px 12px; margin-top:10px;}
-
+ 
   footer{padding:40px 0; border-top:1px solid rgba(127,168,184,.15);}
   footer .container{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
   footer p{font-size:.78rem; margin:0;}
 </style>
 </head>
 <body>
-
+ 
 <header class="topbar">
   <div class="logo"><span class="dot"></span>VENÜS</div>
-  <nav>
+  <nav class="nav-desktop">
     <a href="#ozellikler">Özellikler</a>
     <a href="#nasil-calisir">Nasıl çalışır</a>
     <a href="#teknoloji">Teknoloji</a>
     <a href="#yorumlar">Yorumlar</a>
   </nav>
+  <button class="menu-btn" id="menu-btn" aria-label="Menüyü aç/kapat">
+    <span></span><span></span><span></span>
+  </button>
 </header>
-
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="#ozellikler">Özellikler</a>
+  <a href="#nasil-calisir">Nasıl çalışır</a>
+  <a href="#teknoloji">Teknoloji</a>
+  <a href="#yorumlar">Yorumlar</a>
+</nav>
+ 
 <main>
-
+ 
   <!-- HERO -->
   <section class="hero container">
     <div>
@@ -367,7 +400,7 @@
       <div class="hud-status"><span class="dot"></span><span class="label" id="hud-label">Bekliyor</span></div>
     </div>
   </section>
-
+ 
   <!-- SPOTLIGHT A: OYUN YAPMA -->
   <section id="ozellikler" class="container">
     <div class="spotlight">
@@ -396,7 +429,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- SPOTLIGHT B: FOTO DÜZENLEYİCİ -->
   <section class="container">
     <div class="spotlight reverse">
@@ -440,7 +473,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- SMALL FEATURE GRID -->
   <section class="container">
     <div class="section-head">
@@ -448,7 +481,7 @@
       <p>Venüs'ün elliye yakın hazır komutu var; en çok kullanılan on tanesi burada.</p>
     </div>
     <div class="feature-grid">
-
+ 
       <div class="feature-card">
         <div class="mock mock-chat">
           <div class="bubble sen">Bugün hava nasıl?</div>
@@ -457,7 +490,7 @@
         <h4>Sesli ve yazılı sohbet</h4>
         <p>Mikrofona konuş ya da yaz — Venüs ikisini de aynı anda anlar ve sesli yanıt verir.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-screen">
           <div class="monitor"><div class="eye">👁</div></div>
@@ -465,7 +498,7 @@
         <h4>Ekranını görüp yorumlar</h4>
         <p>"Ekranımı gör" dediğinde anlık görüntü alır, sorularını o görüntüye bakarak yanıtlar.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-apps">
           <div class="app-icon active"></div><div class="app-icon"></div><div class="app-icon"></div>
@@ -474,7 +507,7 @@
         <h4>Uygulamaları sesle açar</h4>
         <p>Bilgisayarındaki tüm uygulamaları tek seferde tarar, adını söylediğinde açar.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-media">
           <div class="play-btn">▶</div>
@@ -483,7 +516,7 @@
         <h4>Müziği ve sesi yönetir</h4>
         <p>Şarkı değiştirmek, sesi kısmak ya da durdurmak için Venüs'e söylemen yeter.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-weather">
           <div class="sun"></div>
@@ -492,7 +525,7 @@
         <h4>Hava durumu ve gündem</h4>
         <p>Herhangi bir şehrin hava durumunu okur, istersen günün öne çıkan başlıklarını özetler.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-map">
           <div class="radius-ring" style="width:70px; height:70px; left:38%; top:20%;"></div>
@@ -503,7 +536,7 @@
         <h4>Yakındaki restoranları bulur</h4>
         <p>Konumunu bulup çevredeki restoranları mesafeye göre sıralar, saatleriyle gösterir.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-translate">
           <div class="lang-bubble from"><span>TR</span><span>Nasılsın?</span></div>
@@ -512,7 +545,7 @@
         <h4>Anında çeviri yapar</h4>
         <p>Hangi dile çevirmek istediğini söyle, Venüs çeviriyi sesli okusun.</p>
       </div>
-
+ 
       <div class="feature-card">
         <div class="mock mock-note">
           <div class="sticky">Toplantı notları: yeni arayüz taslağını paylaş</div>
@@ -521,10 +554,10 @@
         <h4>Not tutar, hatırlatıcı kurar</h4>
         <p>"5 dakika sonra hatırlat" de, notlarını da istediğin an sana geri okur.</p>
       </div>
-
+ 
     </div>
   </section>
-
+ 
   <!-- SELF-MODIFYING SPOTLIGHT -->
   <section class="container">
     <div class="spotlight">
@@ -551,7 +584,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- HOW IT WORKS -->
   <section id="nasil-calisir" class="container">
     <div class="section-head">
@@ -576,7 +609,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- TECH STRIP -->
   <section id="teknoloji" class="tech-strip">
     <div class="container">
@@ -600,7 +633,7 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- YORUMLAR -->
   <section id="yorumlar" class="container">
     <div class="section-head">
@@ -623,9 +656,9 @@
       <p id="form-status" class="form-status"></p>
     </form>
   </section>
-
+ 
 </main>
-
+ 
 <footer>
   <div class="container">
     <div>
@@ -634,7 +667,7 @@
     </div>
   </div>
 </footer>
-
+ 
 <script>
   const states = [
     {label:'Bekliyor', color:'#2f86ff'},
@@ -653,7 +686,7 @@
       label.textContent = states[i].label;
     }, 2600);
   }
-
+ 
   const telemetry = document.getElementById('telemetry');
   if(!reduceMotion){
     setInterval(() => {
@@ -663,7 +696,7 @@
       telemetry.innerHTML = `SYNC ${sync}%<br>SIG ${sig}dB<br>CPU ${cpu}%`;
     }, 1400);
   }
-
+ 
   const yorumForm = document.getElementById('yorum-form');
   const formStatus = document.getElementById('form-status');
   yorumForm.addEventListener('submit', async function(e){
@@ -691,7 +724,17 @@
       formStatus.style.color = 'var(--red)';
     }
   });
+ 
+  const menuBtn = document.getElementById('menu-btn');
+  const navMobile = document.getElementById('nav-mobile');
+  menuBtn.addEventListener('click', () => navMobile.classList.toggle('open'));
+  navMobile.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navMobile.classList.remove('open'));
+  });
 </script>
-
+ 
 </body>
 </html>
+ 
+
+
